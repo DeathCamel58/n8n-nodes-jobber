@@ -12,7 +12,7 @@ export const PropertyOperations: INodeProperties[] = [
 			{
 				name: 'Get',
 				value: 'get',
-				action: 'Get an property by its ID',
+				action: 'Get a property by its ID',
 			},
 			{
 				name: 'List',

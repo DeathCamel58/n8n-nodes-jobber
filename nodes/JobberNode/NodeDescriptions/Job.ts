@@ -12,7 +12,7 @@ export const JobOperations: INodeProperties[] = [
 			{
 				name: 'Get',
 				value: 'get',
-				action: 'Get an job by its ID',
+				action: 'Get a job by its ID',
 			},
 			{
 				name: 'List',
