@@ -7,7 +7,7 @@ export class JobberOAuth2Api implements ICredentialType {
 
 	displayName = 'Jobber OAuth2 API';
 
-	documentationUrl = 'jobber';
+	documentationUrl = 'https://github.com/DeathCamel58/n8n-nodes-jobber';
 
 	properties: INodeProperties[] = [
 		{

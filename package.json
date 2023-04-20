@@ -1,7 +1,7 @@
 {
   "name": "n8n-nodes-jobber",
   "version": "0.0.1",
-  "description": "",
+  "description": "n8n nodes for Jobber",
   "keywords": [
     "n8n-community-node-package"
   ],
