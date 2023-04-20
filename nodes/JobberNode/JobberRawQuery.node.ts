@@ -14,6 +14,7 @@ import type { RequestPromiseOptions } from 'request-promise-native';
 export class JobberRawQuery implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Jobber Raw Query',
+		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		name: 'jobber',
 		icon: 'file:jobber.svg',
 		group: ['transform'],
@@ -31,12 +32,6 @@ export class JobberRawQuery implements INodeType {
 			},
 		],
 		properties: [
-			{
-				displayName: 'Authentication',
-				name: 'authentication',
-				type: 'hidden',
-				default: 'jobberOAuth2Api',
-			},
 			{
 				displayName: 'Request Format',
 				name: 'requestFormat',
@@ -88,24 +83,24 @@ export class JobberRawQuery implements INodeType {
 					 * consistent response. This is due to the API returning the closest version possible to these.
 					 */
 					{
-						name: '2023-03-29',
-						value: '2023-03-29',
-					},
-					{
-						name: '2022-12-07',
-						value: '2022-12-07',
-					},
-					{
-						name: '2022-09-15',
-						value: '2022-09-15',
+						name: '2022-03-10',
+						value: '2022-03-10',
 					},
 					{
 						name: '2022-05-23',
 						value: '2022-05-23',
 					},
 					{
-						name: '2022-03-10',
-						value: '2022-03-10',
+						name: '2022-09-15',
+						value: '2022-09-15',
+					},
+					{
+						name: '2022-12-07',
+						value: '2022-12-07',
+					},
+					{
+						name: '2023-03-29',
+						value: '2023-03-29',
 					},
 				],
 				default: '2023-03-29',

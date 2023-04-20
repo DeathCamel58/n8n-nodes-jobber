@@ -1,7 +1,7 @@
 {
   "name": "n8n-nodes-jobber",
   "version": "0.0.1",
-  "description": "",
+  "description": "n8n nodes for Jobber",
   "keywords": [
     "n8n-community-node-package"
   ],
@@ -22,6 +22,7 @@
     "format": "prettier nodes credentials --write",
     "lint": "eslint nodes credentials package.json",
     "lintfix": "eslint nodes credentials package.json --fix",
+    "nodelinter": "nodelinter --target=./",
     "prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js nodes credentials package.json"
   },
   "files": [
@@ -44,6 +45,7 @@
     "gulp": "^4.0.2",
     "n8n-core": "*",
     "n8n-workflow": "*",
+    "nodelinter": "^0.1.19",
     "prettier": "^2.7.1",
     "typescript": "~4.8.4"
   }
