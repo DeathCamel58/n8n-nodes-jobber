@@ -14,6 +14,7 @@ import { InvoiceFields, InvoiceOperations, InvoiceGenerateGetQuery, InvoiceGener
 import { JobFields, JobOperations, JobGenerateGetQuery, JobGenerateListQuery } from './NodeDescriptions/Job';
 import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQuery } from './NodeDescriptions/Quote';
 import { PropertyFields, PropertyOperations, PropertyGenerateGetQuery, PropertyGenerateListQuery } from './NodeDescriptions/Property';
+import { ExpenseFields, ExpenseOperations, ExpenseGenerateGetQuery, ExpenseGenerateListQuery } from './NodeDescriptions/Expense';
 
 export class Jobber implements INodeType {
 	description: INodeTypeDescription = {
@@ -60,6 +61,10 @@ export class Jobber implements INodeType {
 					// TODO: Add `event`
 					// TODO: Add `expense`
 					// TODO: Add `expenses`
+					{
+						name: 'Expense',
+						value: 'expense',
+					},
 					{
 						name: 'Invoice',
 						value: 'invoice',
@@ -108,6 +113,10 @@ export class Jobber implements INodeType {
 			// Client
 			...ClientOperations,
 			...ClientFields,
+
+			// Expense
+			...ExpenseOperations,
+			...ExpenseFields,
 
 			// Invoice
 			...InvoiceOperations,
@@ -233,6 +242,47 @@ export class Jobber implements INodeType {
 						const filterArchived = this.getNodeParameter('clientFilterArchived', i, '') as boolean;
 
 						const gqlQuery = ClientGenerateListQuery(qty, search, minimal, filterCompanies, filterLeads, filterArchived);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			}
+		} else if (resource === 'expense') {
+			if (operation === 'get') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('expenseID', i, '') as string;
+
+						const gqlQuery = ExpenseGenerateGetQuery(id);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} else if (operation === 'list') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const qty = this.getNodeParameter('expenseQty', i, '') as number;
+						const minimal = this.getNodeParameter('expenseMinimal', i, '') as boolean;
+						const user = this.getNodeParameter('expenseFilterUser', i, '') as string;
+						const reimburseUser = this.getNodeParameter('expenseFilterReimburseUser', i, '') as string;
+
+						const gqlQuery = ExpenseGenerateListQuery(qty, minimal, user, reimburseUser);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
