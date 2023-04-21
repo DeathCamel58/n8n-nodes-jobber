@@ -22,6 +22,7 @@ import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQ
 import { PropertyFields, PropertyOperations, PropertyGenerateGetQuery, PropertyGenerateListQuery } from './NodeDescriptions/Property';
 import { ExpenseFields, ExpenseOperations, ExpenseGenerateGetQuery, ExpenseGenerateListQuery } from './NodeDescriptions/Expense';
 import { UserFields, UserOperations, UserGenerateGetQuery, UserGenerateListQuery } from './NodeDescriptions/User';
+import { VisitFields, VisitOperations, VisitGenerateGetQuery, VisitGenerateListQuery } from './NodeDescriptions/Visit';
 
 export class Jobber implements INodeType {
 	description: INodeTypeDescription = {
@@ -123,8 +124,10 @@ export class Jobber implements INodeType {
 						name: 'User',
 						value: 'user',
 					},
-					// TODO: Add `visit`
-					// TODO: Add `visits`
+					{
+						name: 'Visit',
+						value: 'visit',
+					},
 					// TODO: Add `webHookEvent`
 				],
 				default: 'graphql',
@@ -185,6 +188,10 @@ export class Jobber implements INodeType {
 			// User
 			...UserOperations,
 			...UserFields,
+
+			// Visit
+			...VisitOperations,
+			...VisitFields,
 
 			// Header Parameters
 			{
@@ -683,6 +690,50 @@ export class Jobber implements INodeType {
 						const status = this.getNodeParameter('userStatus', i, '') as string;
 
 						const gqlQuery = UserGenerateListQuery(qty, minimal, status);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			}
+		} else if (resource === 'visit') {
+			if (operation === 'get') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('userID', i, '') as string;
+
+						const gqlQuery = VisitGenerateGetQuery(id);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} else if (operation === 'list') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const qty = this.getNodeParameter('visitQty', i, '') as number;
+						const minimal = this.getNodeParameter('visitMinimal', i, '') as boolean;
+						const status = this.getNodeParameter('visitStatus', i, '') as string;
+						const invoiceStatus = this.getNodeParameter('visitInvoiceStatus', i, '') as string;
+						const relevantToBillingPeriod = this.getNodeParameter('onlyRelevantToBillingPeriod', i, '') as string;
+						const assignedTo = this.getNodeParameter('visitAssignedTo', i, '') as string;
+						const productID = this.getNodeParameter('visitProductID', i, '') as string;
+
+						const gqlQuery = VisitGenerateListQuery(qty, minimal, status, invoiceStatus, relevantToBillingPeriod, assignedTo, productID);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
