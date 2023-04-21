@@ -10,6 +10,7 @@ import { apiJobberApiRequest } from "./GenericFunctions";
 
 import { GraphQLFields, GraphQLOperations } from './NodeDescriptions/GraphQL';
 import { AccountFields, AccountOperations, AccountGenerateGetQuery } from './NodeDescriptions/Account';
+import { AppAlertsFields, AppAlertsOperations, AppAlertsGenerateListQuery } from './NodeDescriptions/AppAlerts';
 import { ClientFields, ClientOperations, ClientGenerateGetQuery, ClientGenerateListQuery } from './NodeDescriptions/Client';
 import { InvoiceFields, InvoiceOperations, InvoiceGenerateGetQuery, InvoiceGenerateListQuery } from './NodeDescriptions/Invoice';
 import { JobFields, JobOperations, JobGenerateGetQuery, JobGenerateListQuery } from './NodeDescriptions/Job';
@@ -53,7 +54,10 @@ export class Jobber implements INodeType {
 						name: 'Account',
 						value: 'account',
 					},
-					// TODO: Add `appAlerts`
+					{
+						name: 'App Alerts',
+						value: 'appAlerts',
+					},
 					// TODO: Add `assessment`
 					// TODO: Add `capitalLoans`
 					// TODO: Add `capitalLoans`
@@ -118,6 +122,10 @@ export class Jobber implements INodeType {
 			// Account
 			...AccountOperations,
 			...AccountFields,
+
+			// App Alerts
+			...AppAlertsOperations,
+			...AppAlertsFields,
 
 			// Client
 			...ClientOperations,
@@ -230,6 +238,24 @@ export class Jobber implements INodeType {
 				for (let i = 0; i < length; i++) {
 					try {
 						const gqlQuery = AccountGenerateGetQuery();
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			}
+		} else if (resource === 'appAlerts') {
+			if (operation === 'list') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const gqlQuery = AppAlertsGenerateListQuery();
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
