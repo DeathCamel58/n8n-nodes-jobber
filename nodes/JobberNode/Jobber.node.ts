@@ -20,8 +20,9 @@ import { EventFields, EventOperations, EventGenerateGetQuery } from './NodeDescr
 import { ExpenseFields, ExpenseOperations, ExpenseGenerateGetQuery, ExpenseGenerateListQuery } from './NodeDescriptions/Expense';
 import { InvoiceFields, InvoiceOperations, InvoiceGenerateGetQuery, InvoiceGenerateListQuery } from './NodeDescriptions/Invoice';
 import { JobFields, JobOperations, JobGenerateGetQuery, JobGenerateListQuery } from './NodeDescriptions/Job';
-import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQuery } from './NodeDescriptions/Quote';
+import { PaymentRecordFields, PaymentRecordOperations, PaymentRecordGenerateGetQuery, PaymentRecordGenerateListQuery } from './NodeDescriptions/PaymentRecord';
 import { PropertyFields, PropertyOperations, PropertyGenerateGetQuery, PropertyGenerateListQuery } from './NodeDescriptions/Property';
+import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQuery } from './NodeDescriptions/Quote';
 import { UserFields, UserOperations, UserGenerateGetQuery, UserGenerateListQuery } from './NodeDescriptions/User';
 import { VisitFields, VisitOperations, VisitGenerateGetQuery, VisitGenerateListQuery } from './NodeDescriptions/Visit';
 
@@ -100,8 +101,10 @@ export class Jobber implements INodeType {
 						name: 'Job',
 						value: 'job',
 					},
-					// TODO: Add `paymentRecord`
-					// TODO: Add `paymentRecords`
+					{
+						name: 'Payment Record',
+						value: 'paymentRecord',
+					},
 					// TODO: Add `payoutRecord`
 					// TODO: Add `payoutRecords`
 					// TODO: Add `productOrService`
@@ -184,6 +187,10 @@ export class Jobber implements INodeType {
 			// Job
 			...JobOperations,
 			...JobFields,
+
+			// Payment Record
+			...PaymentRecordOperations,
+			...PaymentRecordFields,
 
 			// Property
 			...PropertyOperations,
@@ -593,9 +600,50 @@ export class Jobber implements INodeType {
 						const minimal = this.getNodeParameter('jobMinimal', i, '') as boolean;
 						const search = this.getNodeParameter('jobSearch', i, '') as string;
 						const unscheduled = this.getNodeParameter('jobFilterUnscheduled', i, '') as boolean;
-						const status = this.getNodeParameter('visitStatus', i, '') as string;
+						const status = this.getNodeParameter('jobStatus', i, '') as string;
 
 						const gqlQuery = JobGenerateListQuery(qty, search, minimal, unscheduled, status);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			}
+		} else if (resource === 'paymentRecord') {
+			if (operation === 'get') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('paymentRecordID', i, '') as string;
+
+						const gqlQuery = PaymentRecordGenerateGetQuery(id);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} else if (operation === 'list') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const qty = this.getNodeParameter('paymentRecordQty', i, '') as number;
+						const minimal = this.getNodeParameter('paymentRecordMinimal', i, '') as boolean;
+						const adjustmentType = this.getNodeParameter('paymentRecordAdjustmentType', i, '') as string;
+						const type = this.getNodeParameter('paymentRecordType', i, '') as string;
+
+						const gqlQuery = PaymentRecordGenerateListQuery(qty, minimal, adjustmentType, type);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
