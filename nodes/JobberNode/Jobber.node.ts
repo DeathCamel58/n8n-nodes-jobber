@@ -15,6 +15,7 @@ import { JobFields, JobOperations, JobGenerateGetQuery, JobGenerateListQuery } f
 import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQuery } from './NodeDescriptions/Quote';
 import { PropertyFields, PropertyOperations, PropertyGenerateGetQuery, PropertyGenerateListQuery } from './NodeDescriptions/Property';
 import { ExpenseFields, ExpenseOperations, ExpenseGenerateGetQuery, ExpenseGenerateListQuery } from './NodeDescriptions/Expense';
+import { UserFields, UserOperations, UserGenerateGetQuery, UserGenerateListQuery } from './NodeDescriptions/User';
 
 export class Jobber implements INodeType {
 	description: INodeTypeDescription = {
@@ -95,8 +96,10 @@ export class Jobber implements INodeType {
 					// TODO: Add `taxRates`
 					// TODO: Add `timeSheetEntry`
 					// TODO: Add `timeSheetEntries`
-					// TODO: Add `user`
-					// TODO: Add `users`
+					{
+						name: 'User',
+						value: 'user',
+					},
 					// TODO: Add `visit`
 					// TODO: Add `visits`
 					// TODO: Add `webHookEvent`
@@ -131,6 +134,10 @@ export class Jobber implements INodeType {
 			// Quote
 			...QuoteOperations,
 			...QuoteFields,
+
+			// User
+			...UserOperations,
+			...UserFields,
 
 			// Header Parameters
 			{
@@ -448,6 +455,46 @@ export class Jobber implements INodeType {
 						const client = this.getNodeParameter('propertyClient', i, '') as string;
 
 						const gqlQuery = PropertyGenerateListQuery(qty, search, minimal, client);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			}
+		} else if (resource === 'user') {
+			if (operation === 'get') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('userID', i, '') as string;
+
+						const gqlQuery = UserGenerateGetQuery(id);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} else if (operation === 'list') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const qty = this.getNodeParameter('userQty', i, '') as number;
+						const minimal = this.getNodeParameter('userMinimal', i, '') as boolean;
+						const status = this.getNodeParameter('userStatus', i, '') as string;
+
+						const gqlQuery = UserGenerateListQuery(qty, minimal, status);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
