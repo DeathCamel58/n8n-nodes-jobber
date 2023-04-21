@@ -24,6 +24,7 @@ import { PaymentRecordFields, PaymentRecordOperations, PaymentRecordGenerateGetQ
 import { PayoutRecordFields, PayoutRecordOperations, PayoutRecordGenerateGetQuery, PayoutRecordGenerateListQuery } from './NodeDescriptions/PayoutRecord';
 import { PropertyFields, PropertyOperations, PropertyGenerateGetQuery, PropertyGenerateListQuery } from './NodeDescriptions/Property';
 import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQuery } from './NodeDescriptions/Quote';
+import { TimeSheetEntryFields, TimeSheetEntryOperations, TimeSheetEntryGenerateGetQuery, TimeSheetEntryGenerateListQuery } from './NodeDescriptions/TimeSheetEntry';
 import { UserFields, UserOperations, UserGenerateGetQuery, UserGenerateListQuery } from './NodeDescriptions/User';
 import { VisitFields, VisitOperations, VisitGenerateGetQuery, VisitGenerateListQuery } from './NodeDescriptions/Visit';
 
@@ -128,8 +129,10 @@ export class Jobber implements INodeType {
 					// TODO: Add `scheduledItems`
 					// TODO: Add `task`
 					// TODO: Add `taxRates`
-					// TODO: Add `timeSheetEntry`
-					// TODO: Add `timeSheetEntries`
+					{
+						name: 'Time Sheet Entry',
+						value: 'timeSheetEntry',
+					},
 					{
 						name: 'User',
 						value: 'user',
@@ -206,6 +209,10 @@ export class Jobber implements INodeType {
 			// Quote
 			...QuoteOperations,
 			...QuoteFields,
+
+			// Time Sheet Entry
+			...TimeSheetEntryOperations,
+			...TimeSheetEntryFields,
 
 			// User
 			...UserOperations,
@@ -773,6 +780,48 @@ export class Jobber implements INodeType {
 						const client = this.getNodeParameter('propertyClient', i, '') as string;
 
 						const gqlQuery = PropertyGenerateListQuery(qty, search, minimal, client);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			}
+		} else if (resource === 'timeSheetEntry') {
+			if (operation === 'get') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('timeSheetEntryID', i, '') as string;
+
+						const gqlQuery = TimeSheetEntryGenerateGetQuery(id);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} else if (operation === 'list') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const qty = this.getNodeParameter('timeSheetEntryQty', i, '') as number;
+						const minimal = this.getNodeParameter('timeSheetEntryMinimal', i, '') as boolean;
+						const userID = this.getNodeParameter('timeSheetEntryUserID', i, '') as string;
+						const includeAll = this.getNodeParameter('timeSheetEntryIncludeAll', i, '') as string;
+						const approved = this.getNodeParameter('timeSheetEntryApproved', i, '') as string;
+
+						const gqlQuery = TimeSheetEntryGenerateListQuery(qty, minimal, userID, includeAll, approved);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
