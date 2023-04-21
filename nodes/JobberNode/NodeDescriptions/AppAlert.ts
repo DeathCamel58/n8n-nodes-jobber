@@ -2,13 +2,13 @@
 // This is here for example only, and it would be nice if someone tested this query.
 import type {INodeProperties} from 'n8n-workflow';
 
-export const AppAlertsOperations: INodeProperties[] = [
+export const AppAlertOperations: INodeProperties[] = [
 	{
 		displayName: 'Operation',
 		name: 'operation',
 		type: 'options',
 		noDataExpression: true,
-		default: 'get',
+		default: 'list',
 		required: true,
 		options: [
 			{
@@ -20,14 +20,14 @@ export const AppAlertsOperations: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: [
-					'appAlerts',
+					'appAlert',
 				],
 			},
 		},
 	},
 ];
 
-export const AppAlertsFields: INodeProperties[] = [
+export const AppAlertFields: INodeProperties[] = [
 	{
 		displayName: 'How many records',
 		name: 'appAlertsQty',
@@ -37,7 +37,7 @@ export const AppAlertsFields: INodeProperties[] = [
 		required: true,
 		displayOptions: {
 			show: {
-				resource: [ 'appAlerts' ],
+				resource: [ 'appAlert' ],
 				operation: [ 'list' ],
 			},
 		},
@@ -45,7 +45,7 @@ export const AppAlertsFields: INodeProperties[] = [
 ];
 
 // This contains the full list of appAlerts fields
-const fullAppAlertsDetails = `
+const fullAppAlertDetails = `
 app {
 	applicationScopes
 	author
@@ -68,12 +68,12 @@ updatedAt
 /**
  * Returns the GraphQL query string for getting app alerts
  */
-export function AppAlertsGenerateListQuery() {
+export function AppAlertGenerateListQuery() {
 	return `
 		query AppAlertsQuery {
 			appAlerts {
 				nodes {
-					${fullAppAlertsDetails}
+					${fullAppAlertDetails}
 				}
 			}
 		}

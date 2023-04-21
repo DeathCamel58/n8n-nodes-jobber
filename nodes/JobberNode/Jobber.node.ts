@@ -10,7 +10,7 @@ import { apiJobberApiRequest } from "./GenericFunctions";
 
 import { GraphQLFields, GraphQLOperations } from './NodeDescriptions/GraphQL';
 import { AccountFields, AccountOperations, AccountGenerateGetQuery } from './NodeDescriptions/Account';
-import { AppAlertsFields, AppAlertsOperations, AppAlertsGenerateListQuery } from './NodeDescriptions/AppAlerts';
+import { AppAlertFields, AppAlertOperations, AppAlertGenerateListQuery } from './NodeDescriptions/AppAlert';
 import { ClientFields, ClientOperations, ClientGenerateGetQuery, ClientGenerateListQuery } from './NodeDescriptions/Client';
 import { InvoiceFields, InvoiceOperations, InvoiceGenerateGetQuery, InvoiceGenerateListQuery } from './NodeDescriptions/Invoice';
 import { JobFields, JobOperations, JobGenerateGetQuery, JobGenerateListQuery } from './NodeDescriptions/Job';
@@ -55,8 +55,8 @@ export class Jobber implements INodeType {
 						value: 'account',
 					},
 					{
-						name: 'App Alerts',
-						value: 'appAlerts',
+						name: 'App Alert',
+						value: 'appAlert',
 					},
 					// TODO: Add `assessment`
 					// TODO: Add `capitalLoans`
@@ -123,9 +123,9 @@ export class Jobber implements INodeType {
 			...AccountOperations,
 			...AccountFields,
 
-			// App Alerts
-			...AppAlertsOperations,
-			...AppAlertsFields,
+			// App Alert
+			...AppAlertOperations,
+			...AppAlertFields,
 
 			// Client
 			...ClientOperations,
@@ -251,11 +251,11 @@ export class Jobber implements INodeType {
 					}
 				}
 			}
-		} else if (resource === 'appAlerts') {
+		} else if (resource === 'appAlert') {
 			if (operation === 'list') {
 				for (let i = 0; i < length; i++) {
 					try {
-						const gqlQuery = AppAlertsGenerateListQuery();
+						const gqlQuery = AppAlertGenerateListQuery();
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
