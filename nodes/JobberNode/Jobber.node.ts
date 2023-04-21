@@ -707,7 +707,7 @@ export class Jobber implements INodeType {
 			if (operation === 'get') {
 				for (let i = 0; i < length; i++) {
 					try {
-						const id = this.getNodeParameter('userID', i, '') as string;
+						const id = this.getNodeParameter('visitID', i, '') as string;
 
 						const gqlQuery = VisitGenerateGetQuery(id);
 
