@@ -93,6 +93,12 @@ export const UserFields: INodeProperties[] = [
 		],
 		default: '',
 		description: 'Only show activated/deactivated users',
+		displayOptions: {
+			show: {
+				resource: [ 'user' ],
+				operation: [ 'list' ],
+			},
+		},
 	},
 	// TODO: Add permission filtering
 ];
