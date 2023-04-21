@@ -565,8 +565,9 @@ export class Jobber implements INodeType {
 						const minimal = this.getNodeParameter('jobMinimal', i, '') as boolean;
 						const search = this.getNodeParameter('jobSearch', i, '') as string;
 						const unscheduled = this.getNodeParameter('jobFilterUnscheduled', i, '') as boolean;
+						const status = this.getNodeParameter('visitStatus', i, '') as string;
 
-						const gqlQuery = JobGenerateListQuery(qty, search, minimal, unscheduled);
+						const gqlQuery = JobGenerateListQuery(qty, search, minimal, unscheduled, status);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 

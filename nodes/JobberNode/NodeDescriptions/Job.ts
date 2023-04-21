@@ -99,12 +99,66 @@ export const JobFields: INodeProperties[] = [
 			},
 		},
 	},
+	{
+		displayName: 'Status Filter',
+		name: 'visitStatus',
+		type: 'options',
+		options: [
+			{
+				name: 'No Filter',
+				value: '',
+			},
+			{
+				name: 'Requires Invoicing',
+				value: 'requires_invoicing',
+			},
+			{
+				name: 'Archived',
+				value: 'archived',
+			},
+			{
+				name: 'Late',
+				value: 'late',
+			},
+			{
+				name: 'Today',
+				value: 'today',
+			},
+			{
+				name: 'Upcoming',
+				value: 'upcoming',
+			},
+			{
+				name: 'Action Required',
+				value: 'action_required',
+			},
+			{
+				name: 'On Hold',
+				value: 'on_hold',
+			},
+			{
+				name: 'Unscheduled',
+				value: 'unscheduled',
+			},
+			{
+				name: 'Active',
+				value: 'active',
+			},
+		],
+		default: '',
+		description: 'Filter jobs by status',
+		displayOptions: {
+			show: {
+				resource: [ 'job' ],
+				operation: [ 'list' ],
+			},
+		},
+	},
 	// TODO: Add filtering by type
 	// TODO: Add creation date filtering
 	// TODO: Add start date filtering
 	// TODO: Add end date filtering
 	// TODO: Add completion date filtering
-	// TODO: Add status filtering
 	// TODO: Add sorting
 ];
 
@@ -229,19 +283,26 @@ export function JobGenerateListQuery(
 	qty: number,
 	search: string,
 	jobMinimal: boolean = false,
-	jobUnscheduled: boolean = true
+	jobUnscheduled: boolean = true,
+	jobStatus: string = ''
 ) {
 	// Build the arguments for the query
 	let args = `first: ${qty}\n`;
 	if (search) {
 		args += `searchTerm: "${search}"\n`;
 	}
-	let filterAttributes = 'filter: {\n';
-	if (jobUnscheduled) {
-		filterAttributes += `includeUnscheduled: ${jobUnscheduled},\n`;
+	let filterAttributes = '';
+	if (jobUnscheduled || jobStatus != '') {
+		filterAttributes = 'filter: {\n';
+		if (jobUnscheduled) {
+			filterAttributes += `includeUnscheduled: ${jobUnscheduled},\n`;
+		}
+		if (jobStatus != '') {
+			filterAttributes += `status: ${jobStatus},\n`;
+		}
+		filterAttributes += '}';
+		args += filterAttributes;
 	}
-	filterAttributes += '}';
-	args += filterAttributes;
 
 	return `
 		query JobQuery {
