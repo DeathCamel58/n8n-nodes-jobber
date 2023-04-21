@@ -12,6 +12,7 @@ import { GraphQLFields, GraphQLOperations } from './NodeDescriptions/GraphQL';
 import { AccountFields, AccountOperations, AccountGenerateGetQuery } from './NodeDescriptions/Account';
 import { AppAlertFields, AppAlertOperations, AppAlertGenerateListQuery } from './NodeDescriptions/AppAlert';
 import { AssessmentFields, AssessmentOperations, AssessmentGenerateGetQuery } from './NodeDescriptions/Assessment';
+import { CapitalLoanFields, CapitalLoanOperations, CapitalLoanGenerateListQuery } from './NodeDescriptions/CapitalLoan';
 import { ClientFields, ClientOperations, ClientGenerateGetQuery, ClientGenerateListQuery } from './NodeDescriptions/Client';
 import { InvoiceFields, InvoiceOperations, InvoiceGenerateGetQuery, InvoiceGenerateListQuery } from './NodeDescriptions/Invoice';
 import { JobFields, JobOperations, JobGenerateGetQuery, JobGenerateListQuery } from './NodeDescriptions/Job';
@@ -63,8 +64,10 @@ export class Jobber implements INodeType {
 						name: 'Assessment',
 						value: 'assessment',
 					},
-					// TODO: Add `capitalLoans`
-					// TODO: Add `capitalLoans`
+					{
+						name: 'Capital Loan',
+						value: 'capitalLoan',
+					},
 					{
 						name: 'Client',
 						value: 'client',
@@ -134,6 +137,10 @@ export class Jobber implements INodeType {
 			// Assessment
 			...AssessmentOperations,
 			...AssessmentFields,
+
+			// Capital Loan
+			...CapitalLoanOperations,
+			...CapitalLoanFields,
 
 			// Client
 			...ClientOperations,
@@ -284,6 +291,27 @@ export class Jobber implements INodeType {
 						const id = this.getNodeParameter('assessmentID', i, '') as string;
 
 						const gqlQuery = AssessmentGenerateGetQuery(id);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			}
+		} else if (resource === 'capitalLoan') {
+			if (operation === 'list') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const qty = this.getNodeParameter('capitalLoanQty', i, '') as number;
+						const status = this.getNodeParameter('capitalLoanStatus', i, '') as string;
+
+						const gqlQuery = CapitalLoanGenerateListQuery(qty, status);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
