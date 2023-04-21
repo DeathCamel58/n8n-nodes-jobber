@@ -59,8 +59,6 @@ export class Jobber implements INodeType {
 					// TODO: Add `clientEmails`
 					// TODO: Add `clientPhone`
 					// TODO: Add `event`
-					// TODO: Add `expense`
-					// TODO: Add `expenses`
 					{
 						name: 'Expense',
 						value: 'expense',
