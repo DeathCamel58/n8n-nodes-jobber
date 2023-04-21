@@ -21,6 +21,7 @@ import { ExpenseFields, ExpenseOperations, ExpenseGenerateGetQuery, ExpenseGener
 import { InvoiceFields, InvoiceOperations, InvoiceGenerateGetQuery, InvoiceGenerateListQuery } from './NodeDescriptions/Invoice';
 import { JobFields, JobOperations, JobGenerateGetQuery, JobGenerateListQuery } from './NodeDescriptions/Job';
 import { PaymentRecordFields, PaymentRecordOperations, PaymentRecordGenerateGetQuery, PaymentRecordGenerateListQuery } from './NodeDescriptions/PaymentRecord';
+import { PayoutRecordFields, PayoutRecordOperations, PayoutRecordGenerateGetQuery, PayoutRecordGenerateListQuery } from './NodeDescriptions/PayoutRecord';
 import { PropertyFields, PropertyOperations, PropertyGenerateGetQuery, PropertyGenerateListQuery } from './NodeDescriptions/Property';
 import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQuery } from './NodeDescriptions/Quote';
 import { UserFields, UserOperations, UserGenerateGetQuery, UserGenerateListQuery } from './NodeDescriptions/User';
@@ -105,8 +106,10 @@ export class Jobber implements INodeType {
 						name: 'Payment Record',
 						value: 'paymentRecord',
 					},
-					// TODO: Add `payoutRecord`
-					// TODO: Add `payoutRecords`
+					{
+						name: 'Payout Record',
+						value: 'payoutRecord',
+					},
 					// TODO: Add `productOrService`
 					// TODO: Add `productOrServices`
 					// TODO: Add `products`
@@ -191,6 +194,10 @@ export class Jobber implements INodeType {
 			// Payment Record
 			...PaymentRecordOperations,
 			...PaymentRecordFields,
+
+			// Payment Record
+			...PayoutRecordOperations,
+			...PayoutRecordFields,
 
 			// Property
 			...PropertyOperations,
@@ -644,6 +651,45 @@ export class Jobber implements INodeType {
 						const type = this.getNodeParameter('paymentRecordType', i, '') as string;
 
 						const gqlQuery = PaymentRecordGenerateListQuery(qty, minimal, adjustmentType, type);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			}
+		} else if (resource === 'payoutRecord') {
+			if (operation === 'get') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('payoutRecordID', i, '') as string;
+
+						const gqlQuery = PayoutRecordGenerateGetQuery(id);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} else if (operation === 'list') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const qty = this.getNodeParameter('payoutRecordQty', i, '') as number;
+						const minimal = this.getNodeParameter('payoutRecordMinimal', i, '') as boolean;
+
+						const gqlQuery = PayoutRecordGenerateListQuery(qty, minimal);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
