@@ -14,6 +14,7 @@ import { AppAlertFields, AppAlertOperations, AppAlertGenerateListQuery } from '.
 import { AssessmentFields, AssessmentOperations, AssessmentGenerateGetQuery } from './NodeDescriptions/Assessment';
 import { CapitalLoanFields, CapitalLoanOperations, CapitalLoanGenerateListQuery } from './NodeDescriptions/CapitalLoan';
 import { ClientEmailFields, ClientEmailOperations, ClientEmailGenerateListQuery } from './NodeDescriptions/ClientEmail';
+import { ClientPhoneFields, ClientPhoneOperations, ClientPhoneGenerateGetQuery, ClientPhoneGenerateListQuery } from './NodeDescriptions/ClientPhone';
 import { ClientFields, ClientOperations, ClientGenerateGetQuery, ClientGenerateListQuery } from './NodeDescriptions/Client';
 import { InvoiceFields, InvoiceOperations, InvoiceGenerateGetQuery, InvoiceGenerateListQuery } from './NodeDescriptions/Invoice';
 import { JobFields, JobOperations, JobGenerateGetQuery, JobGenerateListQuery } from './NodeDescriptions/Job';
@@ -77,7 +78,10 @@ export class Jobber implements INodeType {
 						name: 'Client Email',
 						value: 'clientEmail',
 					},
-					// TODO: Add `clientPhone`
+					{
+						name: 'Client Phone',
+						value: 'clientPhone',
+					},
 					// TODO: Add `event`
 					{
 						name: 'Expense',
@@ -153,6 +157,10 @@ export class Jobber implements INodeType {
 			// Client Email
 			...ClientEmailOperations,
 			...ClientEmailFields,
+
+			// Client Phone
+			...ClientPhoneOperations,
+			...ClientPhoneFields,
 
 			// Expense
 			...ExpenseOperations,
@@ -384,6 +392,49 @@ export class Jobber implements INodeType {
 						const search = this.getNodeParameter('clientEmailSearch', i, '') as string;
 
 						const gqlQuery = ClientEmailGenerateListQuery(qty, search);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			}
+		} else if (resource === 'clientPhone') {
+			if (operation === 'get') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('clientPhoneID', i, '') as string;
+
+						const gqlQuery = ClientPhoneGenerateGetQuery(id);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} else if (operation === 'list') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const qty = this.getNodeParameter('clientPhoneQty', i, '') as number;
+						const search = this.getNodeParameter('clientPhoneSearch', i, '') as string;
+						const minimal = this.getNodeParameter('clientPhoneMinimal', i, '') as boolean;
+						const sms = this.getNodeParameter('clientPhoneSMS', i, '') as string;
+						const smsOptOut = this.getNodeParameter('clientPhoneSMSOptOut', i, '') as string;
+						const smsValid = this.getNodeParameter('clientPhoneSMSValid', i, '') as string;
+
+						const gqlQuery = ClientPhoneGenerateListQuery(qty, search, minimal, sms, smsOptOut, smsValid);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
