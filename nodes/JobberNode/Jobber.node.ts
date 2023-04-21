@@ -16,11 +16,12 @@ import { CapitalLoanFields, CapitalLoanOperations, CapitalLoanGenerateListQuery 
 import { ClientEmailFields, ClientEmailOperations, ClientEmailGenerateListQuery } from './NodeDescriptions/ClientEmail';
 import { ClientPhoneFields, ClientPhoneOperations, ClientPhoneGenerateGetQuery, ClientPhoneGenerateListQuery } from './NodeDescriptions/ClientPhone';
 import { ClientFields, ClientOperations, ClientGenerateGetQuery, ClientGenerateListQuery } from './NodeDescriptions/Client';
+import { EventFields, EventOperations, EventGenerateGetQuery } from './NodeDescriptions/Event';
+import { ExpenseFields, ExpenseOperations, ExpenseGenerateGetQuery, ExpenseGenerateListQuery } from './NodeDescriptions/Expense';
 import { InvoiceFields, InvoiceOperations, InvoiceGenerateGetQuery, InvoiceGenerateListQuery } from './NodeDescriptions/Invoice';
 import { JobFields, JobOperations, JobGenerateGetQuery, JobGenerateListQuery } from './NodeDescriptions/Job';
 import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQuery } from './NodeDescriptions/Quote';
 import { PropertyFields, PropertyOperations, PropertyGenerateGetQuery, PropertyGenerateListQuery } from './NodeDescriptions/Property';
-import { ExpenseFields, ExpenseOperations, ExpenseGenerateGetQuery, ExpenseGenerateListQuery } from './NodeDescriptions/Expense';
 import { UserFields, UserOperations, UserGenerateGetQuery, UserGenerateListQuery } from './NodeDescriptions/User';
 import { VisitFields, VisitOperations, VisitGenerateGetQuery, VisitGenerateListQuery } from './NodeDescriptions/Visit';
 
@@ -83,7 +84,10 @@ export class Jobber implements INodeType {
 						name: 'Client Phone',
 						value: 'clientPhone',
 					},
-					// TODO: Add `event`
+					{
+						name: 'Event',
+						value: 'event',
+					},
 					{
 						name: 'Expense',
 						value: 'expense',
@@ -164,6 +168,10 @@ export class Jobber implements INodeType {
 			// Client Phone
 			...ClientPhoneOperations,
 			...ClientPhoneFields,
+
+			// Expense
+			...EventOperations,
+			...EventFields,
 
 			// Expense
 			...ExpenseOperations,
@@ -442,6 +450,26 @@ export class Jobber implements INodeType {
 						const smsValid = this.getNodeParameter('clientPhoneSMSValid', i, '') as string;
 
 						const gqlQuery = ClientPhoneGenerateListQuery(qty, search, minimal, sms, smsOptOut, smsValid);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			}
+		} else if (resource === 'event') {
+			if (operation === 'get') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('eventID', i, '') as string;
+
+						const gqlQuery = EventGenerateGetQuery(id);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
