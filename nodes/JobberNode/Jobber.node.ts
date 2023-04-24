@@ -28,6 +28,7 @@ import { PropertyFields, PropertyOperations, PropertyGenerateGetQuery, PropertyG
 import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQuery } from './NodeDescriptions/Quote';
 import { RequestFields, RequestOperations, RequestGenerateGetQuery, RequestGenerateListQuery } from './NodeDescriptions/Request';
 import { TaskFields, TaskOperations, TaskGenerateGetQuery } from './NodeDescriptions/Task';
+import { TaxRateFields, TaxRateOperations, TaxRateGenerateListQuery } from './NodeDescriptions/TaxRate';
 import { TimeSheetEntryFields, TimeSheetEntryOperations, TimeSheetEntryGenerateGetQuery, TimeSheetEntryGenerateListQuery } from './NodeDescriptions/TimeSheetEntry';
 import { UserFields, UserOperations, UserGenerateGetQuery, UserGenerateListQuery } from './NodeDescriptions/User';
 import { VisitFields, VisitOperations, VisitGenerateGetQuery, VisitGenerateListQuery } from './NodeDescriptions/Visit';
@@ -142,7 +143,10 @@ export class Jobber implements INodeType {
 						name: 'Task',
 						value: 'task',
 					},
-					// TODO: Add `taxRates`
+					{
+						name: 'Tax Rate',
+						value: 'taxRate',
+					},
 					{
 						name: 'Time Sheet Entry',
 						value: 'timeSheetEntry',
@@ -235,6 +239,10 @@ export class Jobber implements INodeType {
 			// Task
 			...TaskOperations,
 			...TaskFields,
+
+			// Tax Rate
+			...TaxRateOperations,
+			...TaxRateFields,
 
 			// Time Sheet Entry
 			...TimeSheetEntryOperations,
@@ -910,6 +918,27 @@ export class Jobber implements INodeType {
 						const id = this.getNodeParameter('taskID', i, '') as string;
 
 						const gqlQuery = TaskGenerateGetQuery(id);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			}
+		} else if (resource === 'taxRate') {
+			if (operation === 'list') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const qty = this.getNodeParameter('taxRateQty', i, '') as number;
+						const search = this.getNodeParameter('taxRateSearch', i, '') as string;
+
+						const gqlQuery = TaxRateGenerateListQuery(qty, search);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
