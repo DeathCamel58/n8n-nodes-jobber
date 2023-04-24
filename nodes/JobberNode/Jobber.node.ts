@@ -32,6 +32,7 @@ import { TaxRateFields, TaxRateOperations, TaxRateGenerateListQuery } from './No
 import { TimeSheetEntryFields, TimeSheetEntryOperations, TimeSheetEntryGenerateGetQuery, TimeSheetEntryGenerateListQuery } from './NodeDescriptions/TimeSheetEntry';
 import { UserFields, UserOperations, UserGenerateGetQuery, UserGenerateListQuery } from './NodeDescriptions/User';
 import { VisitFields, VisitOperations, VisitGenerateGetQuery, VisitGenerateListQuery } from './NodeDescriptions/Visit';
+import { WebHookEventFields, WebHookEventOperations, WebHookEventGenerateGetQuery } from './NodeDescriptions/WebHookEvent';
 
 export class Jobber implements INodeType {
 	description: INodeTypeDescription = {
@@ -159,7 +160,10 @@ export class Jobber implements INodeType {
 						name: 'Visit',
 						value: 'visit',
 					},
-					// TODO: Add `webHookEvent`
+					{
+						name: 'WebHook Event',
+						value: 'webHookEvent',
+					},
 				],
 				default: 'graphql',
 			},
@@ -224,7 +228,7 @@ export class Jobber implements INodeType {
 			...PropertyOperations,
 			...PropertyFields,
 
-			// Property
+			// Product or Service
 			...ProductOrServiceOperations,
 			...ProductOrServiceFields,
 
@@ -255,6 +259,10 @@ export class Jobber implements INodeType {
 			// Visit
 			...VisitOperations,
 			...VisitFields,
+
+			// WebHook Event
+			...WebHookEventOperations,
+			...WebHookEventFields,
 
 			// Header Parameters
 			{
@@ -1065,6 +1073,29 @@ export class Jobber implements INodeType {
 						const productID = this.getNodeParameter('visitProductID', i, '') as string;
 
 						const gqlQuery = VisitGenerateListQuery(qty, minimal, status, invoiceStatus, relevantToBillingPeriod, assignedTo, productID);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			}
+		} else if (resource === 'webHookEvent') {
+			if (operation === 'get') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('webHookEventID', i, '') as string;
+						const accountId = this.getNodeParameter('webHookEventAccountId', i, '') as string;
+						const itemId = this.getNodeParameter('webHookEventItemId', i, '') as string;
+						const occurredAt = this.getNodeParameter('webHookEventOccurredAt', i, '') as string;
+
+						const gqlQuery = WebHookEventGenerateGetQuery(id, accountId, itemId, occurredAt);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
