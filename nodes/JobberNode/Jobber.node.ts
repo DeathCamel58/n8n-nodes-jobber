@@ -8,7 +8,6 @@ import type {
 
 import { apiJobberApiRequest } from "./GenericFunctions";
 
-// TODO: Alphabetize these
 import { GraphQLFields, GraphQLOperations } from './NodeDescriptions/GraphQL';
 import { AccountFields, AccountOperations, AccountGenerateGetQuery } from './NodeDescriptions/Account';
 import { AppAlertFields, AppAlertOperations, AppAlertGenerateListQuery } from './NodeDescriptions/AppAlert';
@@ -793,13 +792,13 @@ export class Jobber implements INodeType {
 					}
 				}
 			}
-		} else if (resource === 'request') {
+		} else if (resource === 'property') {
 			if (operation === 'get') {
 				for (let i = 0; i < length; i++) {
 					try {
-						const id = this.getNodeParameter('requestID', i, '') as string;
+						const id = this.getNodeParameter('propertyID', i, '') as string;
 
-						const gqlQuery = RequestGenerateGetQuery(id);
+						const gqlQuery = PropertyGenerateGetQuery(id);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
@@ -815,14 +814,12 @@ export class Jobber implements INodeType {
 			} else if (operation === 'list') {
 				for (let i = 0; i < length; i++) {
 					try {
-						const qty = this.getNodeParameter('requestQty', i, '') as number;
-						const minimal = this.getNodeParameter('requestMinimal', i, '') as boolean;
-						const search = this.getNodeParameter('requestSearch', i, '') as string;
-						const client = this.getNodeParameter('requestClient', i, '') as string;
-						const property = this.getNodeParameter('requestProperty', i, '') as string;
-						const status = this.getNodeParameter('requestStatus', i, '') as string;
+						const qty = this.getNodeParameter('propertyQty', i, '') as number;
+						const minimal = this.getNodeParameter('propertyMinimal', i, '') as boolean;
+						const search = this.getNodeParameter('propertySearch', i, '') as string;
+						const client = this.getNodeParameter('propertyClient', i, '') as string;
 
-						const gqlQuery = RequestGenerateListQuery(qty, search, minimal, client, property, status);
+						const gqlQuery = PropertyGenerateListQuery(qty, search, minimal, client);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
@@ -878,13 +875,13 @@ export class Jobber implements INodeType {
 					}
 				}
 			}
-		} else if (resource === 'property') {
+		} else if (resource === 'request') {
 			if (operation === 'get') {
 				for (let i = 0; i < length; i++) {
 					try {
-						const id = this.getNodeParameter('propertyID', i, '') as string;
+						const id = this.getNodeParameter('requestID', i, '') as string;
 
-						const gqlQuery = PropertyGenerateGetQuery(id);
+						const gqlQuery = RequestGenerateGetQuery(id);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
@@ -900,12 +897,14 @@ export class Jobber implements INodeType {
 			} else if (operation === 'list') {
 				for (let i = 0; i < length; i++) {
 					try {
-						const qty = this.getNodeParameter('propertyQty', i, '') as number;
-						const minimal = this.getNodeParameter('propertyMinimal', i, '') as boolean;
-						const search = this.getNodeParameter('propertySearch', i, '') as string;
-						const client = this.getNodeParameter('propertyClient', i, '') as string;
+						const qty = this.getNodeParameter('requestQty', i, '') as number;
+						const minimal = this.getNodeParameter('requestMinimal', i, '') as boolean;
+						const search = this.getNodeParameter('requestSearch', i, '') as string;
+						const client = this.getNodeParameter('requestClient', i, '') as string;
+						const property = this.getNodeParameter('requestProperty', i, '') as string;
+						const status = this.getNodeParameter('requestStatus', i, '') as string;
 
-						const gqlQuery = PropertyGenerateListQuery(qty, search, minimal, client);
+						const gqlQuery = RequestGenerateListQuery(qty, search, minimal, client, property, status);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
