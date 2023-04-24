@@ -27,6 +27,7 @@ import { ProductOrServiceFields, ProductOrServiceOperations, ProductOrServiceGen
 import { PropertyFields, PropertyOperations, PropertyGenerateGetQuery, PropertyGenerateListQuery } from './NodeDescriptions/Property';
 import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQuery } from './NodeDescriptions/Quote';
 import { RequestFields, RequestOperations, RequestGenerateGetQuery, RequestGenerateListQuery } from './NodeDescriptions/Request';
+import { TaskFields, TaskOperations, TaskGenerateGetQuery } from './NodeDescriptions/Task';
 import { TimeSheetEntryFields, TimeSheetEntryOperations, TimeSheetEntryGenerateGetQuery, TimeSheetEntryGenerateListQuery } from './NodeDescriptions/TimeSheetEntry';
 import { UserFields, UserOperations, UserGenerateGetQuery, UserGenerateListQuery } from './NodeDescriptions/User';
 import { VisitFields, VisitOperations, VisitGenerateGetQuery, VisitGenerateListQuery } from './NodeDescriptions/Visit';
@@ -132,8 +133,15 @@ export class Jobber implements INodeType {
 						value: 'request',
 					},
 					// TODO: Add `requestSettings`
+					// NOTE: Find out what to do in `requestSettings`
+
 					// TODO: Add `scheduledItems`
-					// TODO: Add `task`
+					// NOTE: Can't implement until we can do date ranges. This is required by the API
+
+					{
+						name: 'Task',
+						value: 'task',
+					},
 					// TODO: Add `taxRates`
 					{
 						name: 'Time Sheet Entry',
@@ -223,6 +231,10 @@ export class Jobber implements INodeType {
 			// Quote
 			...QuoteOperations,
 			...QuoteFields,
+
+			// Task
+			...TaskOperations,
+			...TaskFields,
 
 			// Time Sheet Entry
 			...TimeSheetEntryOperations,
@@ -878,6 +890,26 @@ export class Jobber implements INodeType {
 						const client = this.getNodeParameter('propertyClient', i, '') as string;
 
 						const gqlQuery = PropertyGenerateListQuery(qty, search, minimal, client);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			}
+		} else if (resource === 'task') {
+			if (operation === 'get') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('taskID', i, '') as string;
+
+						const gqlQuery = TaskGenerateGetQuery(id);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
