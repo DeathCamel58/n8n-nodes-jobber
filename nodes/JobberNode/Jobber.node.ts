@@ -26,6 +26,7 @@ import { PayoutRecordFields, PayoutRecordOperations, PayoutRecordGenerateGetQuer
 import { ProductOrServiceFields, ProductOrServiceOperations, ProductOrServiceGenerateGetQuery, ProductOrServiceGenerateListQuery } from './NodeDescriptions/ProductOrService';
 import { PropertyFields, PropertyOperations, PropertyGenerateGetQuery, PropertyGenerateListQuery } from './NodeDescriptions/Property';
 import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQuery } from './NodeDescriptions/Quote';
+import { RequestFields, RequestOperations, RequestGenerateGetQuery, RequestGenerateListQuery } from './NodeDescriptions/Request';
 import { TimeSheetEntryFields, TimeSheetEntryOperations, TimeSheetEntryGenerateGetQuery, TimeSheetEntryGenerateListQuery } from './NodeDescriptions/TimeSheetEntry';
 import { UserFields, UserOperations, UserGenerateGetQuery, UserGenerateListQuery } from './NodeDescriptions/User';
 import { VisitFields, VisitOperations, VisitGenerateGetQuery, VisitGenerateListQuery } from './NodeDescriptions/Visit';
@@ -117,8 +118,7 @@ export class Jobber implements INodeType {
 						name: 'Product or Service',
 						value: 'productOrService',
 					},
-					// TODO: Add `products`
-					// TODO: Add `productsSearch`
+					// NOTE: `products` and `productsSearch` queries are deprecated, so we aren't including those
 					{
 						name: 'Property',
 						value: 'property',
@@ -127,9 +127,11 @@ export class Jobber implements INodeType {
 						name: 'Quote',
 						value: 'quote',
 					},
-					// TODO: Add `request`
+					{
+						name: 'Request',
+						value: 'request',
+					},
 					// TODO: Add `requestSettings`
-					// TODO: Add `requests`
 					// TODO: Add `scheduledItems`
 					// TODO: Add `task`
 					// TODO: Add `taxRates`
@@ -213,6 +215,10 @@ export class Jobber implements INodeType {
 			// Property
 			...ProductOrServiceOperations,
 			...ProductOrServiceFields,
+
+			// Request
+			...RequestOperations,
+			...RequestFields,
 
 			// Quote
 			...QuoteOperations,
@@ -746,6 +752,49 @@ export class Jobber implements INodeType {
 						const minimal = this.getNodeParameter('productOrServiceMinimal', i, '') as boolean;
 
 						const gqlQuery = ProductOrServiceGenerateListQuery(qty, minimal);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			}
+		} else if (resource === 'request') {
+			if (operation === 'get') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('requestID', i, '') as string;
+
+						const gqlQuery = RequestGenerateGetQuery(id);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} else if (operation === 'list') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const qty = this.getNodeParameter('requestQty', i, '') as number;
+						const minimal = this.getNodeParameter('requestMinimal', i, '') as boolean;
+						const search = this.getNodeParameter('requestSearch', i, '') as string;
+						const client = this.getNodeParameter('requestClient', i, '') as string;
+						const property = this.getNodeParameter('requestProperty', i, '') as string;
+						const status = this.getNodeParameter('requestStatus', i, '') as string;
+
+						const gqlQuery = RequestGenerateListQuery(qty, search, minimal, client, property, status);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
