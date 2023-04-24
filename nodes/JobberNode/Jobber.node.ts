@@ -8,6 +8,7 @@ import type {
 
 import { apiJobberApiRequest } from "./GenericFunctions";
 
+// TODO: Alphabetize these
 import { GraphQLFields, GraphQLOperations } from './NodeDescriptions/GraphQL';
 import { AccountFields, AccountOperations, AccountGenerateGetQuery } from './NodeDescriptions/Account';
 import { AppAlertFields, AppAlertOperations, AppAlertGenerateListQuery } from './NodeDescriptions/AppAlert';
@@ -22,6 +23,7 @@ import { InvoiceFields, InvoiceOperations, InvoiceGenerateGetQuery, InvoiceGener
 import { JobFields, JobOperations, JobGenerateGetQuery, JobGenerateListQuery } from './NodeDescriptions/Job';
 import { PaymentRecordFields, PaymentRecordOperations, PaymentRecordGenerateGetQuery, PaymentRecordGenerateListQuery } from './NodeDescriptions/PaymentRecord';
 import { PayoutRecordFields, PayoutRecordOperations, PayoutRecordGenerateGetQuery, PayoutRecordGenerateListQuery } from './NodeDescriptions/PayoutRecord';
+import { ProductOrServiceFields, ProductOrServiceOperations, ProductOrServiceGenerateGetQuery, ProductOrServiceGenerateListQuery } from './NodeDescriptions/ProductOrService';
 import { PropertyFields, PropertyOperations, PropertyGenerateGetQuery, PropertyGenerateListQuery } from './NodeDescriptions/Property';
 import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQuery } from './NodeDescriptions/Quote';
 import { TimeSheetEntryFields, TimeSheetEntryOperations, TimeSheetEntryGenerateGetQuery, TimeSheetEntryGenerateListQuery } from './NodeDescriptions/TimeSheetEntry';
@@ -111,8 +113,10 @@ export class Jobber implements INodeType {
 						name: 'Payout Record',
 						value: 'payoutRecord',
 					},
-					// TODO: Add `productOrService`
-					// TODO: Add `productOrServices`
+					{
+						name: 'Product or Service',
+						value: 'productOrService',
+					},
 					// TODO: Add `products`
 					// TODO: Add `productsSearch`
 					{
@@ -206,6 +210,10 @@ export class Jobber implements INodeType {
 			...PropertyOperations,
 			...PropertyFields,
 
+			// Property
+			...ProductOrServiceOperations,
+			...ProductOrServiceFields,
+
 			// Quote
 			...QuoteOperations,
 			...QuoteFields,
@@ -281,6 +289,8 @@ export class Jobber implements INodeType {
 		const jobberGraphQLVersion = this.getNodeParameter('jobberGraphQLVersion', 0) as string;
 		const hideAPIExtensions = this.getNodeParameter('hideAPIExtensions', 0) as boolean;
 
+		// TODO: Check if this can be refactored to be shorter.
+		// Much of these sections are very similar
 		if (resource === 'graphql') {
 			if (operation === 'send') {
 				for (let i = 0; i < length; i++) {
@@ -697,6 +707,45 @@ export class Jobber implements INodeType {
 						const minimal = this.getNodeParameter('payoutRecordMinimal', i, '') as boolean;
 
 						const gqlQuery = PayoutRecordGenerateListQuery(qty, minimal);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			}
+		} else if (resource === 'productOrService') {
+			if (operation === 'get') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('productOrServiceID', i, '') as string;
+
+						const gqlQuery = ProductOrServiceGenerateGetQuery(id);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} else if (operation === 'list') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const qty = this.getNodeParameter('productOrServiceQty', i, '') as number;
+						const minimal = this.getNodeParameter('productOrServiceMinimal', i, '') as boolean;
+
+						const gqlQuery = ProductOrServiceGenerateListQuery(qty, minimal);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
