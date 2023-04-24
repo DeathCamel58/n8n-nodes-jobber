@@ -860,8 +860,9 @@ export class Jobber implements INodeType {
 						const search = this.getNodeParameter('quoteSearch', i, '') as string;
 						const client = this.getNodeParameter('quoteClient', i, '') as string;
 						const number = this.getNodeParameter('quoteNumber', i, '') as string;
+						const status = this.getNodeParameter('quoteStatus', i, '') as string;
 
-						const gqlQuery = QuoteGenerateListQuery(qty, search, minimal, client, number);
+						const gqlQuery = QuoteGenerateListQuery(qty, search, minimal, client, number, status);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 

@@ -99,6 +99,49 @@ export const QuoteFields: INodeProperties[] = [
 		},
 	},
 	{
+		displayName: 'Status Filter',
+		name: 'quoteStatus',
+		type: 'options',
+		options: [
+			{
+				name: 'No Filter',
+				value: '',
+			},
+			{
+				name: 'Draft',
+				value: 'draft',
+			},
+			{
+				name: 'Awaiting Response',
+				value: 'awaiting_response',
+			},
+			{
+				name: 'Archived',
+				value: 'archived',
+			},
+			{
+				name: 'Approved',
+				value: 'approved',
+			},
+			{
+				name: 'Converted',
+				value: 'converted',
+			},
+			{
+				name: 'Changes Requested',
+				value: 'changes_requested',
+			},
+		],
+		default: '',
+		description: 'Filter quotes by status',
+		displayOptions: {
+			show: {
+				resource: [ 'quote' ],
+				operation: [ 'list' ],
+			},
+		},
+	},
+	{
 		displayName: 'Minimal Quote Information',
 		name: 'quoteMinimal',
 		type: 'boolean',
@@ -112,12 +155,10 @@ export const QuoteFields: INodeProperties[] = [
 			},
 		},
 	},
-	// TODO: Add filtering by type
 	// TODO: Add creation date filtering
 	// TODO: Add start date filtering
 	// TODO: Add end date filtering
 	// TODO: Add completion date filtering
-	// TODO: Add status filtering
 	// TODO: Add sorting
 ];
 
@@ -202,13 +243,15 @@ export function QuoteGenerateGetQuery(id: string) {
  * @param quoteMinimal Should we only get minimal information?
  * @param quoteClient List only quotes related to client with given ID
  * @param quoteNumber List only quotes with given number
+ * @param quoteStatus List only quotes with given status
  */
 export function QuoteGenerateListQuery(
 	qty: number,
 	search: string,
 	quoteMinimal: boolean = false,
 	quoteClient: string = '',
-	quoteNumber: string = ''
+	quoteNumber: string = '',
+	quoteStatus: string = ''
 ) {
 	// Build the arguments for the query
 	let args = `first: ${qty}\n`;
@@ -216,13 +259,16 @@ export function QuoteGenerateListQuery(
 		args += `searchTerm: "${search}"\n`;
 	}
 	let filterAttributes = '';
-	if (quoteClient != '' || quoteNumber != '') {
+	if (quoteClient != '' || quoteNumber != '' || quoteStatus != '') {
 		filterAttributes += 'filter: {\n'
 		if (quoteClient != '') {
 			filterAttributes += `clientId: "${quoteClient}",\n`;
 		}
 		if (quoteNumber != '') {
 			filterAttributes += `quoteNumber: "${quoteNumber}",\n`;
+		}
+		if (quoteStatus != '') {
+			filterAttributes += `status: ${quoteStatus},\n`;
 		}
 		filterAttributes += '}';
 	}
