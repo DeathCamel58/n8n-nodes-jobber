@@ -1,9 +1,10 @@
 {
   "name": "n8n-nodes-jobber",
-  "version": "0.0.1",
+  "version": "0.5.0",
   "description": "n8n nodes for Jobber",
   "keywords": [
-    "n8n-community-node-package"
+    "n8n-community-node-package",
+    "jobber"
   ],
   "license": "MIT",
   "homepage": "https://randomcpu.com",
