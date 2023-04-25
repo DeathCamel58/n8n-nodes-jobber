@@ -34,7 +34,7 @@
       "dist/credentials/JobberOAuth2Api.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/JobberNode/JobberRawQuery.node.js"
+      "dist/nodes/JobberNode/Jobber.node.js"
     ]
   },
   "devDependencies": {
