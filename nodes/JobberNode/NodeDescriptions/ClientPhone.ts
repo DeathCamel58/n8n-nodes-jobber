@@ -73,20 +73,6 @@ export const ClientPhoneFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Minimal ClientPhone Information',
-		name: 'clientPhoneMinimal',
-		type: 'boolean',
-		default: true,
-		description: 'Because listing returns numerous clientPhones, listing all clientPhone information for each result can ' +
-			'quickly hit the rate limit. By selecting this, only the clientPhone\'s name and ID will be returned.',
-		displayOptions: {
-			show: {
-				resource: [ 'clientPhone' ],
-				operation: [ 'list' ],
-			},
-		},
-	},
-	{
 		displayName: 'SMS Capability',
 		name: 'clientPhoneSMS',
 		type: 'options',
@@ -167,7 +153,20 @@ export const ClientPhoneFields: INodeProperties[] = [
 			},
 		},
 	},
-	// TODO: Add permission filtering
+	{
+		displayName: 'Minimal Client Phone Information',
+		name: 'clientPhoneMinimal',
+		type: 'boolean',
+		default: true,
+		description: 'Because listing returns numerous clientPhones, listing all clientPhone information for each result can ' +
+			'quickly hit the rate limit. By selecting this, only the clientPhone\'s name and ID will be returned.',
+		displayOptions: {
+			show: {
+				resource: [ 'clientPhone' ],
+				operation: [ 'list' ],
+			},
+		},
+	},
 ];
 
 // This contains the full list of clientPhone fields

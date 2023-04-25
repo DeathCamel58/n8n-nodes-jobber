@@ -99,13 +99,6 @@ export const PropertyFields: INodeProperties[] = [
 			},
 		},
 	},
-	// TODO: Add filtering by type
-	// TODO: Add creation date filtering
-	// TODO: Add start date filtering
-	// TODO: Add end date filtering
-	// TODO: Add completion date filtering
-	// TODO: Add status filtering
-	// TODO: Add sorting
 ];
 
 // This contains the full list of property fields

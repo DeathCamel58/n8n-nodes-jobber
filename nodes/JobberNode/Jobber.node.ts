@@ -137,7 +137,7 @@ export class Jobber implements INodeType {
 					// NOTE: Find out what to do in `requestSettings`
 
 					// TODO: Add `scheduledItems`
-					// NOTE: Can't implement until we can do date ranges. This is required by the API
+					// NOTE: Can't implemented until we can do date ranges. This is required by the API
 
 					{
 						name: 'Task',

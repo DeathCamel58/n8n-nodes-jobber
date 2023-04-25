@@ -73,20 +73,6 @@ export const InvoiceFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Minimal Invoice Information',
-		name: 'invoiceMinimal',
-		type: 'boolean',
-		default: true,
-		description: 'Because listing returns numerous invoices, listing all invoice information for each result can ' +
-			'quickly hit the rate limit. By selecting this, only the invoice\'s name and ID will be returned.',
-		displayOptions: {
-			show: {
-				resource: [ 'invoice' ],
-				operation: [ 'list' ],
-			},
-		},
-	},
-	{
 		displayName: 'Invoice ID',
 		name: 'invoiceFilterClient',
 		type: 'string',
@@ -105,6 +91,20 @@ export const InvoiceFields: INodeProperties[] = [
 		type: 'string',
 		default: '',
 		description: 'Only find invoices with number',
+		displayOptions: {
+			show: {
+				resource: [ 'invoice' ],
+				operation: [ 'list' ],
+			},
+		},
+	},
+	{
+		displayName: 'Minimal Invoice Information',
+		name: 'invoiceMinimal',
+		type: 'boolean',
+		default: true,
+		description: 'Because listing returns numerous invoices, listing all invoice information for each result can ' +
+			'quickly hit the rate limit. By selecting this, only the invoice\'s name and ID will be returned.',
 		displayOptions: {
 			show: {
 				resource: [ 'invoice' ],

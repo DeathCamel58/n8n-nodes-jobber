@@ -60,20 +60,6 @@ export const UserFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Minimal User Information',
-		name: 'userMinimal',
-		type: 'boolean',
-		default: true,
-		description: 'Because listing returns numerous users, listing all user information for each result can ' +
-			'quickly hit the rate limit. By selecting this, only the user\'s name and ID will be returned.',
-		displayOptions: {
-			show: {
-				resource: [ 'user' ],
-				operation: [ 'list' ],
-			},
-		},
-	},
-	{
 		displayName: 'User Status',
 		name: 'userStatus',
 		type: 'options',
@@ -93,6 +79,20 @@ export const UserFields: INodeProperties[] = [
 		],
 		default: '',
 		description: 'Only show activated/deactivated users',
+		displayOptions: {
+			show: {
+				resource: [ 'user' ],
+				operation: [ 'list' ],
+			},
+		},
+	},
+	{
+		displayName: 'Minimal User Information',
+		name: 'userMinimal',
+		type: 'boolean',
+		default: true,
+		description: 'Because listing returns numerous users, listing all user information for each result can ' +
+			'quickly hit the rate limit. By selecting this, only the user\'s name and ID will be returned.',
 		displayOptions: {
 			show: {
 				resource: [ 'user' ],

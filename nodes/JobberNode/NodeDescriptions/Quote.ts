@@ -156,9 +156,8 @@ export const QuoteFields: INodeProperties[] = [
 		},
 	},
 	// TODO: Add creation date filtering
-	// TODO: Add start date filtering
-	// TODO: Add end date filtering
-	// TODO: Add completion date filtering
+	// TODO: Add update date filtering
+	// TODO: Add sent date filtering
 	// TODO: Add sorting
 ];
 

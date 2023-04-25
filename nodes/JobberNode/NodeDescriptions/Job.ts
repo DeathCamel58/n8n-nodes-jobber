@@ -86,22 +86,8 @@ export const JobFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Minimal Job Information',
-		name: 'jobMinimal',
-		type: 'boolean',
-		default: true,
-		description: 'Because listing returns numerous jobs, listing all job information for each result can ' +
-			'quickly hit the rate limit. By selecting this, only the job\'s name and ID will be returned.',
-		displayOptions: {
-			show: {
-				resource: [ 'job' ],
-				operation: [ 'list' ],
-			},
-		},
-	},
-	{
 		displayName: 'Status Filter',
-		name: 'visitStatus',
+		name: 'jobStatus',
 		type: 'options',
 		options: [
 			{
@@ -154,7 +140,21 @@ export const JobFields: INodeProperties[] = [
 			},
 		},
 	},
-	// TODO: Add filtering by type
+	{
+	{
+		displayName: 'Minimal Job Information',
+		name: 'jobMinimal',
+		type: 'boolean',
+		default: true,
+		description: 'Because listing returns numerous jobs, listing all job information for each result can ' +
+			'quickly hit the rate limit. By selecting this, only the job\'s name and ID will be returned.',
+		displayOptions: {
+			show: {
+				resource: [ 'job' ],
+				operation: [ 'list' ],
+			},
+		},
+	},
 	// TODO: Add creation date filtering
 	// TODO: Add start date filtering
 	// TODO: Add end date filtering

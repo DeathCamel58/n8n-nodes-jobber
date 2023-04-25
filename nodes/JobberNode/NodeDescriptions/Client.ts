@@ -73,20 +73,6 @@ export const ClientFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Minimal Client Information',
-		name: 'clientMinimal',
-		type: 'boolean',
-		default: true,
-		description: 'Because listing returns numerous clients, listing all client information for each result can ' +
-			'quickly hit the rate limit. By selecting this, only the client\'s name and ID will be returned.',
-		displayOptions: {
-			show: {
-				resource: [ 'client' ],
-				operation: [ 'list' ],
-			},
-		},
-	},
-	{
 		displayName: 'Companies Only',
 		name: 'clientFilterCompanies',
 		type: 'boolean',
@@ -118,6 +104,20 @@ export const ClientFields: INodeProperties[] = [
 		type: 'boolean',
 		default: false,
 		description: 'Only find archived',
+		displayOptions: {
+			show: {
+				resource: [ 'client' ],
+				operation: [ 'list' ],
+			},
+		},
+	},
+	{
+		displayName: 'Minimal Client Information',
+		name: 'clientMinimal',
+		type: 'boolean',
+		default: true,
+		description: 'Because listing returns numerous clients, listing all client information for each result can ' +
+			'quickly hit the rate limit. By selecting this, only the client\'s name and ID will be returned.',
 		displayOptions: {
 			show: {
 				resource: [ 'client' ],

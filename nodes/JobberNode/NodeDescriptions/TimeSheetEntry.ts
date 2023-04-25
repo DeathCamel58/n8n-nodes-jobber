@@ -127,7 +127,7 @@ export const TimeSheetEntryFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Minimal TimeSheetEntry Information',
+		displayName: 'Minimal Time Sheet Entry Information',
 		name: 'timeSheetEntryMinimal',
 		type: 'boolean',
 		default: true,

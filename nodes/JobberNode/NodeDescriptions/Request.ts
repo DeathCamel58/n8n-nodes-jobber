@@ -167,7 +167,6 @@ export const RequestFields: INodeProperties[] = [
 			},
 		},
 	},
-	// TODO: Add filtering by type
 	// TODO: Add creation date filtering
 	// TODO: Add updated date filtering
 ];

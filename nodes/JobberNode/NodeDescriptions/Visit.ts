@@ -60,20 +60,6 @@ export const VisitFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Minimal Visit Information',
-		name: 'visitMinimal',
-		type: 'boolean',
-		default: true,
-		description: 'Because listing returns numerous visits, listing all visit information for each result can ' +
-			'quickly hit the rate limit. By selecting this, only the visit\'s name and ID will be returned.',
-		displayOptions: {
-			show: {
-				resource: [ 'visit' ],
-				operation: [ 'list' ],
-			},
-		},
-	},
-	{
 		displayName: 'Status Filter',
 		name: 'visitStatus',
 		type: 'options',
@@ -189,6 +175,20 @@ export const VisitFields: INodeProperties[] = [
 		type: 'string',
 		default: '',
 		description: 'Filter to only show visits that contain a product or service ID',
+		displayOptions: {
+			show: {
+				resource: [ 'visit' ],
+				operation: [ 'list' ],
+			},
+		},
+	},
+	{
+		displayName: 'Minimal Visit Information',
+		name: 'visitMinimal',
+		type: 'boolean',
+		default: true,
+		description: 'Because listing returns numerous visits, listing all visit information for each result can ' +
+			'quickly hit the rate limit. By selecting this, only the visit\'s name and ID will be returned.',
 		displayOptions: {
 			show: {
 				resource: [ 'visit' ],

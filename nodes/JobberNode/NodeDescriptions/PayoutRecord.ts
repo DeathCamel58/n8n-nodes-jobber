@@ -73,7 +73,6 @@ export const PayoutRecordFields: INodeProperties[] = [
 			},
 		},
 	},
-	// TODO: Add entry date filtering
 ];
 
 // This contains the full list of payoutRecord fields
