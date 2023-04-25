@@ -11,10 +11,13 @@ name: ESLint
 
 on:
   push:
-    branches: [ "master" ]
+    paths:
+      - "**.ts"
+      - "**.tsx"
+      - "**.js"
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "master" ]
+    branches: [ "master", "dev" ]
 
 jobs:
   eslint:

@@ -48,7 +48,7 @@ export class JobberOAuth2Api implements ICredentialType {
 		},
 		{
 			displayName:
-				'If you get an Invalid Scopes error, make sure you add the correct one <a target="_blank" href="https://docs.n8n.io/integrations/builtin/credentials/slack/#using-oauth">here</a> to your Slack integration',
+				'If you get a permission or scopes error, you\'ll need to add them to your app in the <a target="_blank" href="https://developer.getjobber.com/">Jobber Developer</a> center.',
 			name: 'notice',
 			type: 'notice',
 			default: '',
