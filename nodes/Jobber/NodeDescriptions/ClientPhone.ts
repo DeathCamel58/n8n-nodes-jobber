@@ -46,10 +46,10 @@ export const ClientPhoneFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'How many records',
+		displayName: 'How Many Records',
 		name: 'clientPhoneQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {

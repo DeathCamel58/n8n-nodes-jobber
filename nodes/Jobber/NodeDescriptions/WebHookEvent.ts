@@ -12,7 +12,7 @@ export const WebHookEventOperations: INodeProperties[] = [
 			{
 				name: 'Get',
 				value: 'get',
-				action: 'Get a webHookEvent by its ID',
+				action: 'Get a webhook event by its ID',
 			},
 		],
 		displayOptions: {

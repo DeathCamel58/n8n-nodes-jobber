@@ -1,6 +1,6 @@
 import type {INodeProperties} from 'n8n-workflow';
 
-export const EventOperations: INodeProperties[] = [
+export const TaskOperations: INodeProperties[] = [
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -12,68 +12,78 @@ export const EventOperations: INodeProperties[] = [
 			{
 				name: 'Get',
 				value: 'get',
-				action: 'Get an event by its ID',
+				action: 'Get a task by its ID',
 			},
 		],
 		displayOptions: {
 			show: {
 				resource: [
-					'event',
+					'task',
 				],
 			},
 		},
 	},
 ];
 
-export const EventFields: INodeProperties[] = [
+export const TaskFields: INodeProperties[] = [
 	{
 		displayName: 'ID',
-		name: 'eventID',
+		name: 'taskID',
 		type: 'string',
 		default: '',
-		description: 'event ID',
+		description: 'Task ID',
 		required: true,
 		displayOptions: {
 			show: {
-				resource: [ 'event' ],
+				resource: [ 'task' ],
 				operation: [ 'get' ],
 			},
 		},
 	},
 ];
 
-// This contains the full list of event fields
-const fullEventDetails = `
+// This contains the full list of task fields
+const fullTaskDetails = `
 allDay
 assignedUsers {
 	nodes {
 		id
 	}
 }
+client {
+	id
+}
 createdBy {
 	id
 }
-description
 duration
 endAt
 id
+instructions
 isComplete
 isDefaultTitle
+isRecurring
 overrideOrder
-recurringSummary
+property {
+	id
+}
+recurrenceSchedule {
+	calendarRule
+	friendly
+}
 startAt
 title
 `;
 
 /**
- * Returns the GraphQL query string for the given event
- * @param id The ID of the event
+ * Returns the GraphQL query string for the given task
+ * @param id The ID of the task
  */
-export function EventGenerateGetQuery(id: string) {
+export function TaskGenerateGetQuery(id: string) {
 	return `
-		query EventQuery {
-			event(id: "${id}") {
-				${fullEventDetails}
+		query TaskQuery {
+			task(id: "${id}") {
+				${fullTaskDetails}
 			}
 		}
 		`;

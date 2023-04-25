@@ -36,7 +36,7 @@ export const ExpenseFields: INodeProperties[] = [
 		name: 'expenseID',
 		type: 'string',
 		default: '',
-		description: 'expense ID',
+		description: 'Expense ID',
 		required: true,
 		displayOptions: {
 			show: {
@@ -46,10 +46,10 @@ export const ExpenseFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'How many records',
+		displayName: 'How Many Records',
 		name: 'expenseQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {

@@ -1,102 +1,98 @@
 import type {INodeProperties} from 'n8n-workflow';
 
-export const TaxRateOperations: INodeProperties[] = [
+export const ClientEmailOperations: INodeProperties[] = [
 	{
 		displayName: 'Operation',
 		name: 'operation',
 		type: 'options',
 		noDataExpression: true,
-		default: 'list',
+		default: 'get',
 		required: true,
 		options: [
 			{
+				name: 'Get',
+				value: 'get',
+				action: 'Get a client email by its ID',
+			},
+			{
 				name: 'List',
 				value: 'list',
-				action: 'List tax rates',
+				action: 'List client emails',
 			},
 		],
 		displayOptions: {
 			show: {
 				resource: [
-					'taxRate',
+					'clientEmail',
 				],
 			},
 		},
 	},
 ];
 
-export const TaxRateFields: INodeProperties[] = [
+export const ClientEmailFields: INodeProperties[] = [
 	{
 		displayName: 'Search Term',
-		name: 'taxRateSearch',
+		name: 'clientEmailSearch',
 		type: 'string',
 		default: '',
 		description: 'Search term to look for',
 		displayOptions: {
 			show: {
-				resource: [ 'taxRate' ],
+				resource: [ 'clientEmail' ],
 				operation: [ 'list' ],
 			},
 		},
 	},
 	{
-		displayName: 'How many records',
-		name: 'taxRateQty',
+		displayName: 'How Many Records',
+		name: 'clientEmailQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {
 			show: {
-				resource: [ 'taxRate' ],
+				resource: [ 'clientEmail' ],
 				operation: [ 'list' ],
 			},
 		},
 	},
 ];
 
-// This contains the full list of taxRate fields
-const fullTaxRateDetails = `
-components {
-	default
-	description
+// This contains the full list of clientEmail fields
+const fullClientEmailDetails = `
+address
+client {
 	id
-	label
-	name
-	qboTaxType
-	tax
 }
-default
 description
 id
-label
-name
-qboTaxType
-tax
+primary
 `;
 
 /**
  * Returns the GraphQL query string with the given settings
- * @param qty The number of taxRates to return
+ * @param qty The number of clientEmails to return
  * @param search The search term to use
  */
-export function TaxRateGenerateListQuery(
+export function ClientEmailGenerateListQuery(
 	qty: number,
-	search: string
+	search: string = '',
 ) {
 	// Build the arguments for the query
 	let args = `first: ${qty}\n`;
-	if (search) {
+	if (search != '') {
 		args += `searchTerm: "${search}"\n`;
 	}
 
 	return `
-		query TaxRateQuery {
-			taxRates(
+		query ClientEmailQuery {
+			clientEmails(
 				${args}
 			) {
 				nodes {
-					${fullTaxRateDetails}
+					${fullClientEmailDetails}
 				}
 			}
 		}

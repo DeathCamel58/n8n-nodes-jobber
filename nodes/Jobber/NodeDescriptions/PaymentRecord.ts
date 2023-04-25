@@ -36,7 +36,7 @@ export const PaymentRecordFields: INodeProperties[] = [
 		name: 'paymentRecordID',
 		type: 'string',
 		default: '',
-		description: 'paymentRecord ID',
+		description: 'Payment Record ID',
 		required: true,
 		displayOptions: {
 			show: {
@@ -46,10 +46,10 @@ export const PaymentRecordFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'How many records',
+		displayName: 'How Many Records',
 		name: 'paymentRecordQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {
@@ -65,40 +65,40 @@ export const PaymentRecordFields: INodeProperties[] = [
 		type: 'options',
 		options: [
 			{
-				name: 'No Filter',
-				value: '',
-			},
-			{
-				name: 'Invoice',
-				value: 'INVOICE',
-			},
-			{
-				name: 'Refund',
-				value: 'REFUND',
+				name: 'Bad Debt',
+				value: 'BAD_DEBT',
 			},
 			{
 				name: 'Correction',
 				value: 'CORRECTION',
 			},
 			{
-				name: 'Initial Balance',
-				value: 'INITIAL_BALANCE',
+				name: 'Deposit',
+				value: 'DEPOSIT',
 			},
 			{
 				name: 'Failed ACH Payment',
 				value: 'FAILED_ACH_PAYMENT',
 			},
 			{
+				name: 'Initial Balance',
+				value: 'INITIAL_BALANCE',
+			},
+			{
+				name: 'Invoice',
+				value: 'INVOICE',
+			},
+			{
+				name: 'No Filter',
+				value: '',
+			},
+			{
 				name: 'Payment',
 				value: 'PAYMENT',
 			},
 			{
-				name: 'Deposit',
-				value: 'DEPOSIT',
-			},
-			{
-				name: 'Bad Debt',
-				value: 'BAD_DEBT',
+				name: 'Refund',
+				value: 'REFUND',
 			},
 		],
 		default: '',
@@ -116,8 +116,8 @@ export const PaymentRecordFields: INodeProperties[] = [
 		type: 'options',
 		options: [
 			{
-				name: 'No Filter',
-				value: '',
+				name: 'Bank Transfer',
+				value: 'BANK_TRANSFER',
 			},
 			{
 				name: 'Cash',
@@ -132,28 +132,28 @@ export const PaymentRecordFields: INodeProperties[] = [
 				value: 'CREDIT_CARD',
 			},
 			{
-				name: 'Bank Transfer',
-				value: 'BANK_TRANSFER',
-			},
-			{
-				name: 'Money Order',
-				value: 'MONEY_ORDER',
-			},
-			{
-				name: 'Other',
-				value: 'OTHER',
-			},
-			{
-				name: 'Jobber Payments',
-				value: 'JOBBER_PAYMENTS',
+				name: 'Customer Financing',
+				value: 'CONSUMER_FINANCING',
 			},
 			{
 				name: 'E-Payment',
 				value: 'EPAYMENT',
 			},
 			{
-				name: 'Customer Financing',
-				value: 'CONSUMER_FINANCING',
+				name: 'Jobber Payments',
+				value: 'JOBBER_PAYMENTS',
+			},
+			{
+				name: 'Money Order',
+				value: 'MONEY_ORDER',
+			},
+			{
+				name: 'No Filter',
+				value: '',
+			},
+			{
+				name: 'Other',
+				value: 'OTHER',
 			},
 		],
 		default: '',

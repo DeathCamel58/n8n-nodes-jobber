@@ -36,7 +36,7 @@ export const PayoutRecordFields: INodeProperties[] = [
 		name: 'payoutRecordID',
 		type: 'string',
 		default: '',
-		description: 'payoutRecord ID',
+		description: 'Payout record ID',
 		required: true,
 		displayOptions: {
 			show: {
@@ -46,10 +46,10 @@ export const PayoutRecordFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'How many records',
+		displayName: 'How Many Records',
 		name: 'payoutRecordQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {

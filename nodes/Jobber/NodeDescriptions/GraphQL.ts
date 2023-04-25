@@ -6,13 +6,14 @@ export const GraphQLOperations: INodeProperties[] = [
 		name: 'operation',
 		type: 'options',
 		noDataExpression: true,
-		default: 'create',
+		default: 'send',
 		required: true,
 		options: [
 			{
 				name: 'Send',
 				value: 'send',
-				action: 'Send a raw GraphQL request',
+				/* eslint-disable n8n-nodes-base/node-param-operation-option-action-miscased */
+				action: 'Send raw GraphQL request',
 			},
 		],
 		displayOptions: {

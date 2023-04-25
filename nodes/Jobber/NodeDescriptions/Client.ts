@@ -59,10 +59,10 @@ export const ClientFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'How many records',
+		displayName: 'How Many Records',
 		name: 'clientQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {
@@ -77,7 +77,7 @@ export const ClientFields: INodeProperties[] = [
 		name: 'clientFilterCompanies',
 		type: 'boolean',
 		default: false,
-		description: 'Only find companies',
+		description: 'Whether to only find companies',
 		displayOptions: {
 			show: {
 				resource: [ 'client' ],
@@ -90,7 +90,7 @@ export const ClientFields: INodeProperties[] = [
 		name: 'clientFilterLeads',
 		type: 'boolean',
 		default: false,
-		description: 'Only find leads',
+		description: 'Whether to only find leads',
 		displayOptions: {
 			show: {
 				resource: [ 'client' ],
@@ -103,7 +103,7 @@ export const ClientFields: INodeProperties[] = [
 		name: 'clientFilterArchived',
 		type: 'boolean',
 		default: false,
-		description: 'Only find archived',
+		description: 'Whether to only find archived',
 		displayOptions: {
 			show: {
 				resource: [ 'client' ],

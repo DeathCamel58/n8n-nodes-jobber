@@ -36,7 +36,7 @@ export const RequestFields: INodeProperties[] = [
 		name: 'requestID',
 		type: 'string',
 		default: '',
-		description: 'request ID',
+		description: 'Request ID',
 		required: true,
 		displayOptions: {
 			show: {
@@ -59,10 +59,10 @@ export const RequestFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'How many records',
+		displayName: 'How Many Records',
 		name: 'requestQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {
@@ -104,12 +104,12 @@ export const RequestFields: INodeProperties[] = [
 		type: 'options',
 		options: [
 			{
-				name: 'No Filter',
-				value: '',
+				name: 'Archived',
+				value: 'archived',
 			},
 			{
-				name: 'New',
-				value: 'new',
+				name: 'Assessment Completed',
+				value: 'assessment_completed',
 			},
 			{
 				name: 'Completed',
@@ -120,28 +120,28 @@ export const RequestFields: INodeProperties[] = [
 				value: 'converted',
 			},
 			{
-				name: 'Archived',
-				value: 'archived',
+				name: 'New',
+				value: 'new',
 			},
 			{
-				name: 'Upcoming',
-				value: 'upcoming',
+				name: 'No Filter',
+				value: '',
 			},
 			{
 				name: 'Overdue',
 				value: 'overdue',
 			},
 			{
+				name: 'Today',
+				value: 'today',
+			},
+			{
 				name: 'Unscheduled',
 				value: 'unscheduled',
 			},
 			{
-				name: 'Assessment Completed',
-				value: 'assessment_completed',
-			},
-			{
-				name: 'Today',
-				value: 'today',
+				name: 'Upcoming',
+				value: 'upcoming',
 			},
 		],
 		default: '',

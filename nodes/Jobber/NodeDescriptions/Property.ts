@@ -36,7 +36,7 @@ export const PropertyFields: INodeProperties[] = [
 		name: 'propertyID',
 		type: 'string',
 		default: '',
-		description: 'property ID',
+		description: 'Property ID',
 		required: true,
 		displayOptions: {
 			show: {
@@ -59,10 +59,10 @@ export const PropertyFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'How many records',
+		displayName: 'How Many Records',
 		name: 'propertyQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {

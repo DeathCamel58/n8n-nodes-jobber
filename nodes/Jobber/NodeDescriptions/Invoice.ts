@@ -36,7 +36,7 @@ export const InvoiceFields: INodeProperties[] = [
 		name: 'invoiceID',
 		type: 'string',
 		default: '',
-		description: 'invoice ID',
+		description: 'Invoice ID',
 		required: true,
 		displayOptions: {
 			show: {
@@ -59,10 +59,10 @@ export const InvoiceFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'How many records',
+		displayName: 'How Many Records',
 		name: 'invoiceQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {

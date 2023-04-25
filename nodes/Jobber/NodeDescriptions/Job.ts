@@ -36,7 +36,7 @@ export const JobFields: INodeProperties[] = [
 		name: 'jobID',
 		type: 'string',
 		default: '',
-		description: 'job ID',
+		description: 'Job ID',
 		required: true,
 		displayOptions: {
 			show: {
@@ -59,10 +59,10 @@ export const JobFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'How many records',
+		displayName: 'How Many Records',
 		name: 'jobQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {
@@ -73,7 +73,7 @@ export const JobFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Include unscheduled',
+		displayName: 'Include Unscheduled',
 		name: 'jobFilterUnscheduled',
 		type: 'boolean',
 		default: true,
@@ -91,12 +91,12 @@ export const JobFields: INodeProperties[] = [
 		type: 'options',
 		options: [
 			{
-				name: 'No Filter',
-				value: '',
+				name: 'Action Required',
+				value: 'action_required',
 			},
 			{
-				name: 'Requires Invoicing',
-				value: 'requires_invoicing',
+				name: 'Active',
+				value: 'active',
 			},
 			{
 				name: 'Archived',
@@ -107,28 +107,28 @@ export const JobFields: INodeProperties[] = [
 				value: 'late',
 			},
 			{
-				name: 'Today',
-				value: 'today',
-			},
-			{
-				name: 'Upcoming',
-				value: 'upcoming',
-			},
-			{
-				name: 'Action Required',
-				value: 'action_required',
+				name: 'No Filter',
+				value: '',
 			},
 			{
 				name: 'On Hold',
 				value: 'on_hold',
 			},
 			{
+				name: 'Requires Invoicing',
+				value: 'requires_invoicing',
+			},
+			{
+				name: 'Today',
+				value: 'today',
+			},
+			{
 				name: 'Unscheduled',
 				value: 'unscheduled',
 			},
 			{
-				name: 'Active',
-				value: 'active',
+				name: 'Upcoming',
+				value: 'upcoming',
 			},
 		],
 		default: '',

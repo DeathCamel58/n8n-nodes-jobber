@@ -8,7 +8,6 @@ import type {
 
 import { apiJobberApiRequest } from "./GenericFunctions";
 
-import { GraphQLFields, GraphQLOperations } from './NodeDescriptions/GraphQL';
 import { AccountFields, AccountOperations, AccountGenerateGetQuery } from './NodeDescriptions/Account';
 import { AppAlertFields, AppAlertOperations, AppAlertGenerateListQuery } from './NodeDescriptions/AppAlert';
 import { AssessmentFields, AssessmentOperations, AssessmentGenerateGetQuery } from './NodeDescriptions/Assessment';
@@ -18,6 +17,7 @@ import { ClientPhoneFields, ClientPhoneOperations, ClientPhoneGenerateGetQuery, 
 import { ClientFields, ClientOperations, ClientGenerateGetQuery, ClientGenerateListQuery } from './NodeDescriptions/Client';
 import { EventFields, EventOperations, EventGenerateGetQuery } from './NodeDescriptions/Event';
 import { ExpenseFields, ExpenseOperations, ExpenseGenerateGetQuery, ExpenseGenerateListQuery } from './NodeDescriptions/Expense';
+import { GraphQLFields, GraphQLOperations } from './NodeDescriptions/GraphQL';
 import { InvoiceFields, InvoiceOperations, InvoiceGenerateGetQuery, InvoiceGenerateListQuery } from './NodeDescriptions/Invoice';
 import { JobFields, JobOperations, JobGenerateGetQuery, JobGenerateListQuery } from './NodeDescriptions/Job';
 import { PaymentRecordFields, PaymentRecordOperations, PaymentRecordGenerateGetQuery, PaymentRecordGenerateListQuery } from './NodeDescriptions/PaymentRecord';
@@ -61,10 +61,6 @@ export class Jobber implements INodeType {
 				noDataExpression: true,
 				options: [
 					{
-						name: 'GraphQL',
-						value: 'graphql',
-					},
-					{
 						name: 'Account',
 						value: 'account',
 					},
@@ -99,6 +95,10 @@ export class Jobber implements INodeType {
 					{
 						name: 'Expense',
 						value: 'expense',
+					},
+					{
+						name: 'GraphQL',
+						value: 'graphql',
 					},
 					{
 						name: 'Invoice',

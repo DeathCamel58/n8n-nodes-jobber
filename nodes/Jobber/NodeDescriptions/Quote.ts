@@ -36,7 +36,7 @@ export const QuoteFields: INodeProperties[] = [
 		name: 'quoteID',
 		type: 'string',
 		default: '',
-		description: 'quote ID',
+		description: 'Quote ID',
 		required: true,
 		displayOptions: {
 			show: {
@@ -59,10 +59,10 @@ export const QuoteFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'How many records',
+		displayName: 'How Many Records',
 		name: 'quoteQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {
@@ -104,32 +104,32 @@ export const QuoteFields: INodeProperties[] = [
 		type: 'options',
 		options: [
 			{
-				name: 'No Filter',
-				value: '',
-			},
-			{
-				name: 'Draft',
-				value: 'draft',
-			},
-			{
-				name: 'Awaiting Response',
-				value: 'awaiting_response',
+				name: 'Approved',
+				value: 'approved',
 			},
 			{
 				name: 'Archived',
 				value: 'archived',
 			},
 			{
-				name: 'Approved',
-				value: 'approved',
+				name: 'Awaiting Response',
+				value: 'awaiting_response',
+			},
+			{
+				name: 'Changes Requested',
+				value: 'changes_requested',
 			},
 			{
 				name: 'Converted',
 				value: 'converted',
 			},
 			{
-				name: 'Changes Requested',
-				value: 'changes_requested',
+				name: 'Draft',
+				value: 'draft',
+			},
+			{
+				name: 'No Filter',
+				value: '',
 			},
 		],
 		default: '',

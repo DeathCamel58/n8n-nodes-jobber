@@ -12,12 +12,12 @@ export const TimeSheetEntryOperations: INodeProperties[] = [
 			{
 				name: 'Get',
 				value: 'get',
-				action: 'Get a timeSheetEntry by its ID',
+				action: 'Get a time sheet entry by its ID',
 			},
 			{
 				name: 'List',
 				value: 'list',
-				action: 'List timeSheetEntrys',
+				action: 'List time sheet entries',
 			},
 		],
 		displayOptions: {
@@ -36,7 +36,7 @@ export const TimeSheetEntryFields: INodeProperties[] = [
 		name: 'timeSheetEntryID',
 		type: 'string',
 		default: '',
-		description: 'timeSheetEntry ID',
+		description: 'Time sheet entry ID',
 		required: true,
 		displayOptions: {
 			show: {
@@ -46,10 +46,10 @@ export const TimeSheetEntryFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'How many records',
+		displayName: 'How Many Records',
 		name: 'timeSheetEntryQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {

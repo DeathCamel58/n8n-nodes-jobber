@@ -29,10 +29,10 @@ export const AppAlertOperations: INodeProperties[] = [
 
 export const AppAlertFields: INodeProperties[] = [
 	{
-		displayName: 'How many records',
+		displayName: 'How Many Records',
 		name: 'appAlertsQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {

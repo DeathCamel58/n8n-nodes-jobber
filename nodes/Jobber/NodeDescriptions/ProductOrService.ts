@@ -36,7 +36,7 @@ export const ProductOrServiceFields: INodeProperties[] = [
 		name: 'productOrServiceID',
 		type: 'string',
 		default: '',
-		description: 'productOrService ID',
+		description: 'Product or service ID',
 		required: true,
 		displayOptions: {
 			show: {
@@ -46,10 +46,10 @@ export const ProductOrServiceFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'How many records',
+		displayName: 'How Many Records',
 		name: 'productOrServiceQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {

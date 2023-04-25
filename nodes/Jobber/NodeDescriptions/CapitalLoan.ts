@@ -6,7 +6,7 @@ export const CapitalLoanOperations: INodeProperties[] = [
 		name: 'operation',
 		type: 'options',
 		noDataExpression: true,
-		default: 'get',
+		default: 'list',
 		required: true,
 		options: [
 			{
@@ -41,10 +41,10 @@ export const CapitalLoanFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'How many records',
+		displayName: 'How Many Records',
 		name: 'capitalLoanQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {
@@ -60,36 +60,36 @@ export const CapitalLoanFields: INodeProperties[] = [
 		type: 'options',
 		options: [
 			{
-				name: 'No Filter',
-				value: '',
-			},
-			{
-				name: 'Undelivered',
-				value: 'UNDELIVERED',
-			},
-			{
 				name: 'Accepted',
 				value: 'ACCEPTED',
+			},
+			{
+				name: 'Cancelled',
+				value: 'CANCELLED',
 			},
 			{
 				name: 'Delivered',
 				value: 'DELIVERED',
 			},
 			{
+				name: 'Expired',
+				value: 'EXPIRED',
+			},
+			{
 				name: 'Fully Repaid',
 				value: 'FULLY_REPAID',
+			},
+			{
+				name: 'No Filter',
+				value: '',
 			},
 			{
 				name: 'Paid Out',
 				value: 'PAID_OUT',
 			},
 			{
-				name: 'Expired',
-				value: 'EXPIRED',
-			},
-			{
-				name: 'Cancelled',
-				value: 'CANCELLED',
+				name: 'Undelivered',
+				value: 'UNDELIVERED',
 			},
 		],
 		default: '',

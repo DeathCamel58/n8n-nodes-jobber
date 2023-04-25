@@ -36,7 +36,7 @@ export const VisitFields: INodeProperties[] = [
 		name: 'visitID',
 		type: 'string',
 		default: '',
-		description: 'visit ID',
+		description: 'Bisit ID',
 		required: true,
 		displayOptions: {
 			show: {
@@ -46,10 +46,10 @@ export const VisitFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'How many records',
+		displayName: 'How Many Records',
 		name: 'visitQty',
 		type: 'number',
-		default: '10',
+		default: 10,
 		description: 'How many records to return',
 		required: true,
 		displayOptions: {
@@ -65,10 +65,6 @@ export const VisitFields: INodeProperties[] = [
 		type: 'options',
 		options: [
 			{
-				name: 'No Filter',
-				value: '',
-			},
-			{
 				name: 'Active',
 				value: 'ACTIVE',
 			},
@@ -79,6 +75,10 @@ export const VisitFields: INodeProperties[] = [
 			{
 				name: 'Late',
 				value: 'LATE',
+			},
+			{
+				name: 'No Filter',
+				value: '',
 			},
 			{
 				name: 'Today',
@@ -157,7 +157,7 @@ export const VisitFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Assigned to',
+		displayName: 'Assigned To',
 		name: 'visitAssignedTo',
 		type: 'string',
 		default: '',
