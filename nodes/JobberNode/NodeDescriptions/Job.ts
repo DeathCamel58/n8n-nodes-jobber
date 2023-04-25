@@ -141,6 +141,32 @@ export const JobFields: INodeProperties[] = [
 		},
 	},
 	{
+		displayName: 'Job Type Filter',
+		name: 'jobType',
+		type: 'options',
+		options: [
+			{
+				name: 'No Filter',
+				value: '',
+			},
+			{
+				name: 'One Off',
+				value: 'ONE_OFF',
+			},
+			{
+				name: 'Recurring',
+				value: 'RECURRING',
+			},
+		],
+		default: '',
+		description: 'Filter based on job\'s status',
+		displayOptions: {
+			show: {
+				resource: [ 'job' ],
+				operation: [ 'list' ],
+			},
+		},
+	},
 	{
 		displayName: 'Minimal Job Information',
 		name: 'jobMinimal',
@@ -278,13 +304,16 @@ export function JobGenerateGetQuery(id: string) {
  * @param search The search term to use
  * @param jobMinimal Should we only get minimal information?
  * @param jobUnscheduled Should we include unscheduled jobs?
+ * @param jobStatus The status of the job to filter by
+ * @param jobType The job type to filter by
  */
 export function JobGenerateListQuery(
 	qty: number,
 	search: string,
 	jobMinimal: boolean = false,
 	jobUnscheduled: boolean = true,
-	jobStatus: string = ''
+	jobStatus: string = '',
+	jobType: string = ''
 ) {
 	// Build the arguments for the query
 	let args = `first: ${qty}\n`;
@@ -292,14 +321,18 @@ export function JobGenerateListQuery(
 		args += `searchTerm: "${search}"\n`;
 	}
 	let filterAttributes = '';
-	if (jobUnscheduled || jobStatus != '') {
+	if (jobUnscheduled || jobStatus != '' || jobType != '') {
 		filterAttributes = 'filter: {\n';
-		if (jobUnscheduled) {
-			filterAttributes += `includeUnscheduled: ${jobUnscheduled},\n`;
-		}
 		if (jobStatus != '') {
 			filterAttributes += `status: ${jobStatus},\n`;
 		}
+		if (jobType != '') {
+			filterAttributes += `jobType: ${jobType},\n`;
+		}
+		if (jobUnscheduled) {
+			filterAttributes += `includeUnscheduled: ${jobUnscheduled},\n`;
+		}
+		// TODO: Filtering by status doesn't work
 		filterAttributes += '}';
 		args += filterAttributes;
 	}
