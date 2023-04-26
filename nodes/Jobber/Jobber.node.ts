@@ -25,7 +25,7 @@ import { PayoutRecordFields, PayoutRecordOperations, PayoutRecordGenerateGetQuer
 import { ProductOrServiceFields, ProductOrServiceOperations, ProductOrServiceGenerateGetQuery, ProductOrServiceGenerateListQuery } from './NodeDescriptions/ProductOrService';
 import { PropertyFields, PropertyOperations, PropertyGenerateGetQuery, PropertyGenerateListQuery } from './NodeDescriptions/Property';
 import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQuery } from './NodeDescriptions/Quote';
-import { RequestFields, RequestOperations, RequestGenerateGetQuery, RequestGenerateListQuery } from './NodeDescriptions/Request';
+import { RequestFields, RequestOperations, RequestGenerateGetQuery, RequestGenerateListQuery, RequestGenerateUpsert } from './NodeDescriptions/Request';
 import { TaskFields, TaskOperations, TaskGenerateGetQuery } from './NodeDescriptions/Task';
 import { TaxRateFields, TaxRateOperations, TaxRateGenerateListQuery } from './NodeDescriptions/TaxRate';
 import { TimeSheetEntryFields, TimeSheetEntryOperations, TimeSheetEntryGenerateGetQuery, TimeSheetEntryGenerateListQuery } from './NodeDescriptions/TimeSheetEntry';
@@ -933,6 +933,34 @@ export class Jobber implements INodeType {
 						const status = this.getNodeParameter('requestStatus', i, '') as string;
 
 						const gqlQuery = RequestGenerateListQuery(qty, search, minimal, client, property, status);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} else if (operation === 'upsert') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('requestID', i, '') as string;
+						const contactName = this.getNodeParameter('requestContactName', i, '') as string;
+						const companyName = this.getNodeParameter('requestCompanyName', i, '') as string;
+						const title = this.getNodeParameter('requestTitle', i, '') as string;
+						const email = this.getNodeParameter('requestEmail', i, '') as string;
+						const clientId = this.getNodeParameter('requestClientId', i, '') as string;
+						const source = this.getNodeParameter('requestSource', i, '') as string;
+						const phone = this.getNodeParameter('requestPhone', i, '') as string;
+						const propertyId = this.getNodeParameter('requestPropertyId', i, '') as string;
+						const referringClient = this.getNodeParameter('requestReferringClient', i, '') as string;
+						const minimal = this.getNodeParameter('requestMinimal', i, '') as boolean;
+
+						const gqlQuery = RequestGenerateUpsert(id, contactName, companyName, title, email, clientId, source, phone, propertyId, referringClient, minimal);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 

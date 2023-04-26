@@ -19,6 +19,12 @@ export const RequestOperations: INodeProperties[] = [
 				value: 'list',
 				action: 'List requests',
 			},
+			{
+				name: 'Create or Update',
+				value: 'upsert',
+				/* eslint-disable n8n-nodes-base/node-param-operation-option-action-miscased */
+				action: 'Create a new record, or update the current one if it already exists (upsert)',
+			},
 		],
 		displayOptions: {
 			show: {
@@ -154,6 +160,136 @@ export const RequestFields: INodeProperties[] = [
 		},
 	},
 	{
+		displayName: 'ID',
+		name: 'requestID',
+		type: 'string',
+		default: '',
+		description: 'The encoded ID of the request',
+		displayOptions: {
+			show: {
+				resource: [ 'request' ],
+				operation: [ 'upsert' ],
+			},
+		},
+	},
+	{
+		displayName: 'contactName',
+		name: 'requestContactName',
+		type: 'string',
+		default: '',
+		description: 'Contact name for a request',
+		displayOptions: {
+			show: {
+				resource: [ 'request' ],
+				operation: [ 'upsert' ],
+			},
+		},
+	},
+	{
+		displayName: 'Company Name',
+		name: 'requestCompanyName',
+		type: 'string',
+		default: '',
+		description: 'Company name for a request',
+		displayOptions: {
+			show: {
+				resource: [ 'request' ],
+				operation: [ 'upsert' ],
+			},
+		},
+	},
+	{
+		displayName: 'Title',
+		name: 'requestTitle',
+		type: 'string',
+		default: '',
+		description: 'Title for for a request',
+		displayOptions: {
+			show: {
+				resource: [ 'request' ],
+				operation: [ 'upsert' ],
+			},
+		},
+	},
+	{
+		displayName: 'Email',
+		name: 'requestEmail',
+		type: 'string',
+		default: '',
+		description: 'Email associated with a request',
+		displayOptions: {
+			show: {
+				resource: [ 'request' ],
+				operation: [ 'upsert' ],
+			},
+		},
+	},
+	{
+		displayName: 'clientId',
+		name: 'requestClientId',
+		type: 'string',
+		default: '',
+		description: 'The ID of the client for whom the request is created',
+		displayOptions: {
+			show: {
+				resource: [ 'request' ],
+				operation: [ 'upsert' ],
+			},
+		},
+	},
+	{
+		displayName: 'Source',
+		name: 'requestSource',
+		type: 'string',
+		default: '',
+		description: 'The source of the request',
+		displayOptions: {
+			show: {
+				resource: [ 'request' ],
+				operation: [ 'upsert' ],
+			},
+		},
+	},
+	{
+		displayName: 'Phone',
+		name: 'requestPhone',
+		type: 'string',
+		default: '',
+		description: 'The phone number of the contact in the request',
+		displayOptions: {
+			show: {
+				resource: [ 'request' ],
+				operation: [ 'upsert' ],
+			},
+		},
+	},
+	{
+		displayName: 'Property ID',
+		name: 'requestPropertyId',
+		type: 'string',
+		default: '',
+		description: 'The property associated with the request',
+		displayOptions: {
+			show: {
+				resource: [ 'request' ],
+				operation: [ 'upsert' ],
+			},
+		},
+	},
+	{
+		displayName: 'Referring Client',
+		name: 'requestReferringClient',
+		type: 'string',
+		default: '',
+		description: 'The ID of the referring client, if this work request was referred',
+		displayOptions: {
+			show: {
+				resource: [ 'request' ],
+				operation: [ 'upsert' ],
+			},
+		},
+	},
+	{
 		displayName: 'Minimal Request Information',
 		name: 'requestMinimal',
 		type: 'boolean',
@@ -279,4 +415,90 @@ export function RequestGenerateListQuery(
 			}
 		}
 		`;
+}
+
+/**
+ * Returns the GraphQL query string to upsert a request
+ * @param id The encoded ID of the request
+ * @param contactName Contact name for a request
+ * @param companyName Company name for a request
+ * @param title Title for a request
+ * @param email Email associated with a request
+ * @param clientId The ID of the client for whom the request is created
+ * @param source The source of the request
+ * @param phone The phone number of the contact in the request
+ * @param propertyId The property associated with the request
+ * @param referringClient The ID of the referring client, if this work request was referred
+ * @param minimal Should we only get minimal information?
+ */
+export function RequestGenerateUpsert(
+	id: string = '',
+	contactName: string = '',
+	companyName: string = '',
+	title: string = '',
+	email: string = '',
+	clientId: string = '',
+	source: string = '',
+	phone: string = '',
+	propertyId: string = '',
+	referringClient: string = '',
+	minimal: boolean = false
+) {
+	// Build the arguments for the query
+	let args = '';
+	if (id) {
+		args += `id: "${id}"\n`;
+	}
+	let attributes = '';
+	if (contactName != '' || companyName != '' || title != '' || email != '' || clientId != '' || source != '' || propertyId != '' || referringClient != '') {
+		attributes += 'attributes: {\n';
+		if (contactName != '') {
+			attributes += `contactName: "${contactName}",\n`;
+		}
+		if (companyName != '') {
+			attributes += `companyName: "${companyName}",\n`;
+		}
+		if (title != '') {
+			attributes += `title: "${title}",\n`;
+		}
+		if (email != '') {
+			attributes += `email: "${email}",\n`;
+		}
+		if (clientId != '') {
+			attributes += `clientId: "${clientId}",\n`;
+		}
+		if (source != '') {
+			attributes += `source: "${source}",\n`;
+		}
+		if (phone != '') {
+			attributes += `phone: "${phone}",\n`;
+		}
+		if (propertyId != '') {
+			attributes += `propertyId: "${propertyId}",\n`;
+		}
+		if (referringClient != '') {
+			attributes += `referringClient: "${referringClient}",\n`;
+		}
+		attributes += '}';
+	}
+	args += attributes;
+
+	let mutation = `
+		mutation RequestMutation {
+			requestUpsert(
+				${args}
+			) {
+				request {
+					${minimal ? 'id\ntitle' : fullRequestDetails}
+				}
+				userErrors {
+					message
+					path
+				}
+			}
+		}
+		`;
+	console.log(mutation);
+
+	return mutation;
 }
