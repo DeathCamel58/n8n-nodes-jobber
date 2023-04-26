@@ -62,5 +62,8 @@ _By the time users are looking for community nodes, they probably already know n
 
 ## Version history
 
+### `0.5.0`
+* Added easy to use nodes!
+
 ### `0.0.1`
 * Added raw GraphQL query support
