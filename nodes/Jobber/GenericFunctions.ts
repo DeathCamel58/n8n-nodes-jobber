@@ -43,6 +43,7 @@ export async function apiJobberApiRequest(
 			options,
 			{
 				tokenType: 'Bearer',
+				includeCredentialsOnRefreshOnBody: true,
 			}
 		);
 		if (response.status === 'error') {
