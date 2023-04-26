@@ -702,44 +702,40 @@ export function ClientGenerateUpsert(
 			}
 			attributes += `],\n`;
 		}
-		if (Object.keys(billingAddress).length != 0) {
-			attributes += `billingAddress: [\n`;
-			for (let i = 0; i < billingAddress.billingAddress.length; i++) {
-				attributes += '{\n';
-				if (billingAddress.billingAddress[i].street1 != '') {
-					attributes += `street1: "${billingAddress.billingAddress[i].street1}"\n`;
-				}
-				if (billingAddress.billingAddress[i].street2 != '') {
-					attributes += `street2: "${billingAddress.billingAddress[i].street2}"\n`;
-				}
-				if (billingAddress.billingAddress[i].city != '') {
-					attributes += `city: "${billingAddress.billingAddress[i].city}"\n`;
-				}
-				if (billingAddress.billingAddress[i].country != '') {
-					attributes += `country: "${billingAddress.billingAddress[i].country}"\n`;
-				}
-				if (billingAddress.billingAddress[i].province != '') {
-					attributes += `province: "${billingAddress.billingAddress[i].province}"\n`;
-				}
-				if (billingAddress.billingAddress[i].postalCode != '') {
-					attributes += `postalCode: "${billingAddress.billingAddress[i].postalCode}"\n`;
-				}
-				if (billingAddress.billingAddress[i].latitude != '') {
-					attributes += `latitude: ${billingAddress.billingAddress[i].latitude}\n`;
-				}
-				if (billingAddress.billingAddress[i].longitude != '') {
-					attributes += `longitude: ${billingAddress.billingAddress[i].longitude}\n`;
-				}
-				if (billingAddress.billingAddress[i].id != '') {
-					attributes += `id: "${billingAddress.billingAddress[i].id}"\n`;
-				}
-				// TODO: Add customFields
-				if (billingAddress.billingAddress[i].taxRateId != '') {
-					attributes += `taxRateId: "${billingAddress.billingAddress[i].taxRateId}"\n`;
-				}
-				attributes += '},\n';
+		if (Object.keys(billingAddress.billingAddress).length != 0) {
+			attributes += 'billingAddress: {\n';
+			if (billingAddress.billingAddress.street1 != '') {
+				attributes += `street1: "${billingAddress.billingAddress.street1}"\n`;
 			}
-			attributes += `],\n`;
+			if (billingAddress.billingAddress.street2 != '') {
+				attributes += `street2: "${billingAddress.billingAddress.street2}"\n`;
+			}
+			if (billingAddress.billingAddress.city != '') {
+				attributes += `city: "${billingAddress.billingAddress.city}"\n`;
+			}
+			if (billingAddress.billingAddress.country != '') {
+				attributes += `country: "${billingAddress.billingAddress.country}"\n`;
+			}
+			if (billingAddress.billingAddress.province != '') {
+				attributes += `province: "${billingAddress.billingAddress.province}"\n`;
+			}
+			if (billingAddress.billingAddress.postalCode != '') {
+				attributes += `postalCode: "${billingAddress.billingAddress.postalCode}"\n`;
+			}
+			if (billingAddress.billingAddress.latitude != '') {
+				attributes += `latitude: ${billingAddress.billingAddress.latitude}\n`;
+			}
+			if (billingAddress.billingAddress.longitude != '') {
+				attributes += `longitude: ${billingAddress.billingAddress.longitude}\n`;
+			}
+			if (billingAddress.billingAddress.id != '') {
+				attributes += `id: "${billingAddress.billingAddress.id}"\n`;
+			}
+			// TODO: Add customFields
+			if (billingAddress.billingAddress.taxRateId != '') {
+				attributes += `taxRateId: "${billingAddress.billingAddress.taxRateId}"\n`;
+			}
+			attributes += '},\n';
 		}
 		if (Object.keys(properties).length != 0) {
 			attributes += `properties: [\n`;
