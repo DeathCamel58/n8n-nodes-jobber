@@ -25,6 +25,11 @@ export const ClientOperations: INodeProperties[] = [
 				/* eslint-disable n8n-nodes-base/node-param-operation-option-action-miscased */
 				action: 'Create a new record, or update the current one if it already exists (upsert)',
 			},
+			{
+				name: 'Archive',
+				value: 'archive',
+				action: 'Archive a client by their ID',
+			},
 		],
 		displayOptions: {
 			show: {
@@ -47,7 +52,7 @@ export const ClientFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: [ 'client' ],
-				operation: [ 'get' ],
+				operation: [ 'get', 'archive' ],
 			},
 		},
 	},
@@ -472,7 +477,7 @@ export const ClientFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: [ 'client' ],
-				operation: [ 'list', 'upsert' ],
+				operation: [ 'list', 'upsert', 'archive' ],
 			},
 		},
 	},
@@ -788,6 +793,30 @@ export function ClientGenerateUpsert(
 			clientUpsert(
 				${args}
 			) {
+				client {
+					${minimal ? 'id\nname' : fullClientDetails}
+				}
+				userErrors {
+					message
+					path
+				}
+			}
+		}
+		`;
+}
+
+/**
+ * Returns the GraphQL query string to archive a client
+ * @param id The ID of the client
+ * @param minimal Should we only get minimal information?
+ */
+export function ClientGenerateArchive(
+	id: string,
+	minimal: boolean = false
+) {
+	return `
+		mutation ClientMutation {
+			clientArchive(clientId: "${id}") {
 				client {
 					${minimal ? 'id\nname' : fullClientDetails}
 				}

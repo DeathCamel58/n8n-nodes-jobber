@@ -14,7 +14,7 @@ import { AssessmentFields, AssessmentOperations, AssessmentGenerateGetQuery } fr
 import { CapitalLoanFields, CapitalLoanOperations, CapitalLoanGenerateListQuery } from './NodeDescriptions/CapitalLoan';
 import { ClientEmailFields, ClientEmailOperations, ClientEmailGenerateListQuery } from './NodeDescriptions/ClientEmail';
 import { ClientPhoneFields, ClientPhoneOperations, ClientPhoneGenerateGetQuery, ClientPhoneGenerateListQuery } from './NodeDescriptions/ClientPhone';
-import { ClientFields, ClientOperations, ClientGenerateGetQuery, ClientGenerateListQuery, ClientGenerateUpsert } from './NodeDescriptions/Client';
+import { ClientFields, ClientOperations, ClientGenerateGetQuery, ClientGenerateListQuery, ClientGenerateUpsert, ClientGenerateArchive } from './NodeDescriptions/Client';
 import { EventFields, EventOperations, EventGenerateGetQuery } from './NodeDescriptions/Event';
 import { ExpenseFields, ExpenseOperations, ExpenseGenerateGetQuery, ExpenseGenerateListQuery } from './NodeDescriptions/Expense';
 import { GraphQLFields, GraphQLOperations } from './NodeDescriptions/GraphQL';
@@ -476,6 +476,25 @@ export class Jobber implements INodeType {
 						const minimal = this.getNodeParameter('clientMinimal', i, '') as boolean;
 
 						const gqlQuery = ClientGenerateUpsert(id, firstName, lastName, companyName, phones, emails, billingAddress, properties, minimal);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} else if (operation === 'archive') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('clientID', i, '') as string;
+						const minimal = this.getNodeParameter('clientMinimal', i, '') as boolean;
+
+						const gqlQuery = ClientGenerateArchive(id, minimal);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
