@@ -627,7 +627,7 @@ export function ClientGenerateListQuery(
 
 /**
  * Returns the GraphQL query string to upsert a client
- * @param id The number of clients to return
+ * @param id The number of client to upsert
  * @param firstName The first name of the client
  * @param lastName The last name of the client
  * @param companyName The company name of the client
@@ -665,7 +665,7 @@ export function ClientGenerateUpsert(
 		if (companyName != '') {
 			attributes += `companyName: "${companyName}",\n`;
 		}
-		if (phones != '') {
+		if (Object.keys(phones).length != 0) {
 			attributes += `phones: [\n`;
 			for (let i = 0; i < phones.phones.length; i++) {
 				attributes += '{\n';
@@ -684,9 +684,8 @@ export function ClientGenerateUpsert(
 			}
 			attributes += `],\n`;
 		}
-		if (emails != '') {
+		if (Object.keys(emails).length != 0) {
 			attributes += `emails: [\n`;
-			console.log(emails);
 			for (let i = 0; i < emails.emails.length; i++) {
 				attributes += '{\n';
 				if (emails.emails[i].id != '') {
@@ -703,9 +702,8 @@ export function ClientGenerateUpsert(
 			}
 			attributes += `],\n`;
 		}
-		if (billingAddress != '') {
+		if (Object.keys(billingAddress).length != 0) {
 			attributes += `billingAddress: [\n`;
-			console.log(billingAddress);
 			for (let i = 0; i < billingAddress.billingAddress.length; i++) {
 				attributes += '{\n';
 				if (billingAddress.billingAddress[i].street1 != '') {
@@ -743,9 +741,8 @@ export function ClientGenerateUpsert(
 			}
 			attributes += `],\n`;
 		}
-		if (properties != '') {
+		if (Object.keys(properties).length != 0) {
 			attributes += `properties: [\n`;
-			console.log(properties);
 			for (let i = 0; i < properties.properties.length; i++) {
 				attributes += '{\n';
 				if (properties.properties[i].street1 != '') {
@@ -790,7 +787,7 @@ export function ClientGenerateUpsert(
 	}
 	args += attributes;
 
-	let mutation = `
+	return `
 		mutation ClientMutation {
 			clientUpsert(
 				${args}
@@ -805,7 +802,4 @@ export function ClientGenerateUpsert(
 			}
 		}
 		`;
-	console.log(mutation);
-
-	return mutation;
 }
