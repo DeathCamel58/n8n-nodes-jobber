@@ -14,6 +14,11 @@ export const TaxRateOperations: INodeProperties[] = [
 				value: 'list',
 				action: 'List tax rates',
 			},
+			{
+				name: 'Create',
+				value: 'create',
+				action: 'Create a new tax rate',
+			},
 		],
 		displayOptions: {
 			show: {
@@ -50,6 +55,47 @@ export const TaxRateFields: INodeProperties[] = [
 			show: {
 				resource: [ 'taxRate' ],
 				operation: [ 'list' ],
+			},
+		},
+	},
+	{
+		displayName: 'Name',
+		name: 'taxRateName',
+		type: 'string',
+		default: '',
+		description: 'Tax name',
+		required: true,
+		displayOptions: {
+			show: {
+				resource: [ 'taxRate' ],
+				operation: [ 'create' ],
+			},
+		},
+	},
+	{
+		displayName: 'Rate',
+		name: 'taxRateRate',
+		type: 'string',
+		default: '',
+		description: 'Tax rate',
+		required: true,
+		displayOptions: {
+			show: {
+				resource: [ 'taxRate' ],
+				operation: [ 'create' ],
+			},
+		},
+	},
+	{
+		displayName: 'Internal Description',
+		name: 'taxRateInternalDescription',
+		type: 'string',
+		default: '',
+		description: 'Tax internal description',
+		displayOptions: {
+			show: {
+				resource: [ 'taxRate' ],
+				operation: [ 'create' ],
 			},
 		},
 	},
@@ -97,6 +143,54 @@ export function TaxRateGenerateListQuery(
 			) {
 				nodes {
 					${fullTaxRateDetails}
+				}
+			}
+		}
+		`;
+}
+
+/**
+ * Returns the GraphQL query string to archive a request
+ * @param name Tax name
+ * @param rate Tax rate
+ * @param internalDescription Tax internal description
+ * @param minimal Should we only get minimal information?
+ */
+export function TaxRateGenerateCreate(
+	name: string = '',
+	rate: string = '0',
+	internalDescription: string = '',
+	minimal: boolean = false
+) {
+	// Build the arguments for the query
+	let args = '';
+	let input = '';
+	if (name != '' || rate != '' || internalDescription != '') {
+		input += 'input: {\n';
+		if (name != '') {
+			input += `name: "${name}",\n`;
+		}
+		if (rate != '') {
+			input += `rate: ${rate},\n`;
+		}
+		if (internalDescription != '') {
+			input += `internalDescription: "${internalDescription}",\n`;
+		}
+		input += '}';
+	}
+	args += input;
+
+	return `
+		mutation TaxRateMutation {
+			taxCreate(
+				${args}
+			) {
+				tax {
+					${minimal ? 'id\nname' : '\ndefault\ndescription\nid\nlabel\nname\nqboTaxType\ntax'}
+				}
+				userErrors {
+					message
+					path
 				}
 			}
 		}

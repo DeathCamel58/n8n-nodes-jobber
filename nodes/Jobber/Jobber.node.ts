@@ -27,7 +27,7 @@ import { PropertyFields, PropertyOperations, PropertyGenerateGetQuery, PropertyG
 import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQuery } from './NodeDescriptions/Quote';
 import { RequestFields, RequestOperations, RequestGenerateGetQuery, RequestGenerateListQuery, RequestGenerateUpsert, RequestGenerateArchiveQuery, RequestGenerateUnarchiveQuery } from './NodeDescriptions/Request';
 import { TaskFields, TaskOperations, TaskGenerateGetQuery } from './NodeDescriptions/Task';
-import { TaxRateFields, TaxRateOperations, TaxRateGenerateListQuery } from './NodeDescriptions/TaxRate';
+import { TaxRateFields, TaxRateOperations, TaxRateGenerateListQuery, TaxRateGenerateCreate } from './NodeDescriptions/TaxRate';
 import { TimeSheetEntryFields, TimeSheetEntryOperations, TimeSheetEntryGenerateGetQuery, TimeSheetEntryGenerateListQuery } from './NodeDescriptions/TimeSheetEntry';
 import { UserFields, UserOperations, UserGenerateGetQuery, UserGenerateListQuery } from './NodeDescriptions/User';
 import { VisitFields, VisitOperations, VisitGenerateGetQuery, VisitGenerateListQuery } from './NodeDescriptions/Visit';
@@ -1059,6 +1059,26 @@ export class Jobber implements INodeType {
 						const search = this.getNodeParameter('taxRateSearch', i, '') as string;
 
 						const gqlQuery = TaxRateGenerateListQuery(qty, search);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} else if (operation === 'create') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const name = this.getNodeParameter('taxRateName', i, '') as string;
+						const rate = this.getNodeParameter('taxRateRate', i, '') as string;
+						const internalDescription = this.getNodeParameter('taxRateInternalDescription', i, '') as string;
+
+						const gqlQuery = TaxRateGenerateCreate(name, rate, internalDescription);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
