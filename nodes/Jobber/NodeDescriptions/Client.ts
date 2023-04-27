@@ -281,6 +281,12 @@ export const ClientFields: INodeProperties[] = [
 				],
 			},
 		],
+		displayOptions: {
+			show: {
+				resource: [ 'client' ],
+				operation: [ 'upsert' ],
+			}
+		},
 	},
 	{
 		displayName: 'Billing Address',
