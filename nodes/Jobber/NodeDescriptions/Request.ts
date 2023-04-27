@@ -10,6 +10,16 @@ export const RequestOperations: INodeProperties[] = [
 		required: true,
 		options: [
 			{
+				name: 'Archive',
+				value: 'archive',
+				action: 'Archive a request by its ID',
+			},
+			{
+				name: 'Create or Update',
+				value: 'upsert',
+				action: 'Create a new record or update the current one if it already exists upsert',
+			},
+			{
 				name: 'Get',
 				value: 'get',
 				action: 'Get a request by its ID',
@@ -20,10 +30,9 @@ export const RequestOperations: INodeProperties[] = [
 				action: 'List requests',
 			},
 			{
-				name: 'Create or Update',
-				value: 'upsert',
-				/* eslint-disable n8n-nodes-base/node-param-operation-option-action-miscased */
-				action: 'Create a new record, or update the current one if it already exists (upsert)',
+				name: 'Unarchive',
+				value: 'unarchive',
+				action: 'Unarchive a request by its ID',
 			},
 		],
 		displayOptions: {
@@ -47,7 +56,7 @@ export const RequestFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: [ 'request' ],
-				operation: [ 'get' ],
+				operation: [ 'get', 'archive', 'unarchive' ],
 			},
 		},
 	},
@@ -299,7 +308,7 @@ export const RequestFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: [ 'request' ],
-				operation: [ 'list' ],
+				operation: [ 'list', 'archive', 'unarchive' ],
 			},
 		},
 	},
@@ -390,7 +399,7 @@ export function RequestGenerateListQuery(
 	}
 	let filterAttributes = '';
 	if (requestClient != '' || requestProperty != '' || requestStatus != '') {
-		filterAttributes += 'filter: {\n'
+		filterAttributes += 'filter: {\n';
 		if (requestClient != '') {
 			filterAttributes += `clientId: "${requestClient}",\n`;
 		}
@@ -442,7 +451,7 @@ export function RequestGenerateUpsert(
 	phone: string = '',
 	propertyId: string = '',
 	referringClient: string = '',
-	minimal: boolean = false
+	minimal: boolean = false,
 ) {
 	// Build the arguments for the query
 	let args = '';
@@ -450,7 +459,16 @@ export function RequestGenerateUpsert(
 		args += `id: "${id}"\n`;
 	}
 	let attributes = '';
-	if (contactName != '' || companyName != '' || title != '' || email != '' || clientId != '' || source != '' || propertyId != '' || referringClient != '') {
+	if (
+		contactName != '' ||
+		companyName != '' ||
+		title != '' ||
+		email != '' ||
+		clientId != '' ||
+		source != '' ||
+		propertyId != '' ||
+		referringClient != ''
+	) {
 		attributes += 'attributes: {\n';
 		if (contactName != '') {
 			attributes += `contactName: "${contactName}",\n`;
@@ -501,4 +519,46 @@ export function RequestGenerateUpsert(
 	console.log(mutation);
 
 	return mutation;
+}
+
+/**
+ * Returns the GraphQL query string to archive a request
+ * @param id The ID of the request
+ * @param minimal Should we only get minimal information?
+ */
+export function RequestGenerateArchiveQuery(id: string, minimal: boolean = false) {
+	return `
+		mutation RequestMutation {
+			requestArchive(requestId: "${id}") {
+				request {
+					${minimal ? 'id\ntitle' : fullRequestDetails}
+				}
+				userErrors {
+					message
+					path
+				}
+			}
+		}
+		`;
+}
+
+/**
+ * Returns the GraphQL query string to archive a request
+ * @param id The ID of the request
+ * @param minimal Should we only get minimal information?
+ */
+export function RequestGenerateUnarchiveQuery(id: string, minimal: boolean = false) {
+	return `
+		mutation RequestMutation {
+			requestUnarchive(requestId: "${id}") {
+				request {
+					${minimal ? 'id\ntitle' : fullRequestDetails}
+				}
+				userErrors {
+					message
+					path
+				}
+			}
+		}
+		`;
 }

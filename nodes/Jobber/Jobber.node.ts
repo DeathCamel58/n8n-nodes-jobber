@@ -25,7 +25,7 @@ import { PayoutRecordFields, PayoutRecordOperations, PayoutRecordGenerateGetQuer
 import { ProductOrServiceFields, ProductOrServiceOperations, ProductOrServiceGenerateGetQuery, ProductOrServiceGenerateListQuery } from './NodeDescriptions/ProductOrService';
 import { PropertyFields, PropertyOperations, PropertyGenerateGetQuery, PropertyGenerateListQuery } from './NodeDescriptions/Property';
 import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQuery } from './NodeDescriptions/Quote';
-import { RequestFields, RequestOperations, RequestGenerateGetQuery, RequestGenerateListQuery, RequestGenerateUpsert } from './NodeDescriptions/Request';
+import { RequestFields, RequestOperations, RequestGenerateGetQuery, RequestGenerateListQuery, RequestGenerateUpsert, RequestGenerateArchiveQuery, RequestGenerateUnarchiveQuery } from './NodeDescriptions/Request';
 import { TaskFields, TaskOperations, TaskGenerateGetQuery } from './NodeDescriptions/Task';
 import { TaxRateFields, TaxRateOperations, TaxRateGenerateListQuery } from './NodeDescriptions/TaxRate';
 import { TimeSheetEntryFields, TimeSheetEntryOperations, TimeSheetEntryGenerateGetQuery, TimeSheetEntryGenerateListQuery } from './NodeDescriptions/TimeSheetEntry';
@@ -980,6 +980,44 @@ export class Jobber implements INodeType {
 						const minimal = this.getNodeParameter('requestMinimal', i, '') as boolean;
 
 						const gqlQuery = RequestGenerateUpsert(id, contactName, companyName, title, email, clientId, source, phone, propertyId, referringClient, minimal);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} if (operation === 'archive') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('requestID', i, '') as string;
+						const minimal = this.getNodeParameter('requestMinimal', i, '') as boolean;
+
+						const gqlQuery = RequestGenerateArchiveQuery(id, minimal);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} if (operation === 'unarchive') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('requestID', i, '') as string;
+						const minimal = this.getNodeParameter('requestMinimal', i, '') as boolean;
+
+						const gqlQuery = RequestGenerateUnarchiveQuery(id, minimal);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
