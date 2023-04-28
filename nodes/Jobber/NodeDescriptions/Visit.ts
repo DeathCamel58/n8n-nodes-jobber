@@ -32,12 +32,37 @@ export const VisitOperations: INodeProperties[] = [
 
 export const VisitFields: INodeProperties[] = [
 	{
-		displayName: 'ID',
+		displayName: 'idQueryName',
+		name: 'idQueryName',
+		type: 'hidden',
+		default: 'visits',
+		displayOptions: {
+			show: {
+				resource: [ 'visit' ],
+			},
+		},
+	},
+	{
+		displayName: 'uniqueName',
+		name: 'uniqueName',
+		type: 'hidden',
+		default: 'title',
+		displayOptions: {
+			show: {
+				resource: [ 'visit' ],
+			},
+		},
+	},
+	{
+		displayName: 'Visit Name or ID',
 		name: 'visitID',
-		type: 'string',
+		type: 'options',
 		default: '',
-		description: 'Bisit ID',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
 		required: true,
+		typeOptions: {
+			loadOptionsMethod: 'getIds',
+		},
 		displayOptions: {
 			show: {
 				resource: [ 'visit' ],

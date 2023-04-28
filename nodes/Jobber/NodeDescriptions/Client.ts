@@ -43,12 +43,37 @@ export const ClientOperations: INodeProperties[] = [
 
 export const ClientFields: INodeProperties[] = [
 	{
-		displayName: 'ID',
+		displayName: 'idQueryName',
+		name: 'idQueryName',
+		type: 'hidden',
+		default: 'clients',
+		displayOptions: {
+			show: {
+				resource: [ 'client' ],
+			},
+		},
+	},
+	{
+		displayName: 'uniqueName',
+		name: 'uniqueName',
+		type: 'hidden',
+		default: 'name',
+		displayOptions: {
+			show: {
+				resource: [ 'client' ],
+			},
+		},
+	},
+	{
+		displayName: 'Client Name or ID',
 		name: 'clientID',
-		type: 'string',
+		type: 'options',
 		default: '',
-		description: 'Client ID',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
 		required: true,
+		typeOptions: {
+			loadOptionsMethod: 'getIds',
+		},
 		displayOptions: {
 			show: {
 				resource: [ 'client' ],

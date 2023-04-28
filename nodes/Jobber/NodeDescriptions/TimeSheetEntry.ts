@@ -32,12 +32,37 @@ export const TimeSheetEntryOperations: INodeProperties[] = [
 
 export const TimeSheetEntryFields: INodeProperties[] = [
 	{
-		displayName: 'ID',
+		displayName: 'idQueryName',
+		name: 'idQueryName',
+		type: 'hidden',
+		default: 'timeSheetEntries',
+		displayOptions: {
+			show: {
+				resource: [ 'timeSheetEntry' ],
+			},
+		},
+	},
+	{
+		displayName: 'uniqueName',
+		name: 'uniqueName',
+		type: 'hidden',
+		default: 'startAt',
+		displayOptions: {
+			show: {
+				resource: [ 'timeSheetEntry' ],
+			},
+		},
+	},
+	{
+		displayName: 'Time Sheet Entry Name or ID',
 		name: 'timeSheetEntryID',
-		type: 'string',
+		type: 'options',
 		default: '',
-		description: 'Time sheet entry ID',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
 		required: true,
+		typeOptions: {
+			loadOptionsMethod: 'getIds',
+		},
 		displayOptions: {
 			show: {
 				resource: [ 'timeSheetEntry' ],

@@ -32,12 +32,37 @@ export const ExpenseOperations: INodeProperties[] = [
 
 export const ExpenseFields: INodeProperties[] = [
 	{
-		displayName: 'ID',
+		displayName: 'idQueryName',
+		name: 'idQueryName',
+		type: 'hidden',
+		default: 'expenses',
+		displayOptions: {
+			show: {
+				resource: [ 'expense' ],
+			},
+		},
+	},
+	{
+		displayName: 'uniqueName',
+		name: 'uniqueName',
+		type: 'hidden',
+		default: 'title',
+		displayOptions: {
+			show: {
+				resource: [ 'expense' ],
+			},
+		},
+	},
+	{
+		displayName: 'Expense Name or ID',
 		name: 'expenseID',
-		type: 'string',
+		type: 'options',
 		default: '',
-		description: 'Expense ID',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
 		required: true,
+		typeOptions: {
+			loadOptionsMethod: 'getIds',
+		},
 		displayOptions: {
 			show: {
 				resource: [ 'expense' ],

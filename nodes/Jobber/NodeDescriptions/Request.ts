@@ -47,12 +47,37 @@ export const RequestOperations: INodeProperties[] = [
 
 export const RequestFields: INodeProperties[] = [
 	{
-		displayName: 'ID',
+		displayName: 'idQueryName',
+		name: 'idQueryName',
+		type: 'hidden',
+		default: 'requests',
+		displayOptions: {
+			show: {
+				resource: [ 'request' ],
+			},
+		},
+	},
+	{
+		displayName: 'uniqueName',
+		name: 'uniqueName',
+		type: 'hidden',
+		default: 'title',
+		displayOptions: {
+			show: {
+				resource: [ 'request' ],
+			},
+		},
+	},
+	{
+		displayName: 'Request Name or ID',
 		name: 'requestID',
-		type: 'string',
+		type: 'options',
 		default: '',
-		description: 'Request ID',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
 		required: true,
+		typeOptions: {
+			loadOptionsMethod: 'getIds',
+		},
 		displayOptions: {
 			show: {
 				resource: [ 'request' ],

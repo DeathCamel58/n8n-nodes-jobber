@@ -32,12 +32,39 @@ export const UserOperations: INodeProperties[] = [
 
 export const UserFields: INodeProperties[] = [
 	{
-		displayName: 'ID',
+		displayName: 'idQueryName',
+		name: 'idQueryName',
+		type: 'hidden',
+		default: 'users',
+		displayOptions: {
+			show: {
+				resource: [ 'user' ],
+			},
+		},
+	},
+	{
+		displayName: 'uniqueName',
+		name: 'uniqueName',
+		type: 'hidden',
+		// TODO: Figure out what to set this to
+		// The address is in `name { full }`, but we currently can't get this in the list
+		default: 'id',
+		displayOptions: {
+			show: {
+				resource: [ 'user' ],
+			},
+		},
+	},
+	{
+		displayName: 'User Name or ID',
 		name: 'userID',
-		type: 'string',
+		type: 'options',
 		default: '',
-		description: 'User ID',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
 		required: true,
+		typeOptions: {
+			loadOptionsMethod: 'getIds',
+		},
 		displayOptions: {
 			show: {
 				resource: [ 'user' ],

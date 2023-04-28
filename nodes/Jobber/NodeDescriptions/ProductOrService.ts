@@ -32,12 +32,37 @@ export const ProductOrServiceOperations: INodeProperties[] = [
 
 export const ProductOrServiceFields: INodeProperties[] = [
 	{
-		displayName: 'ID',
+		displayName: 'idQueryName',
+		name: 'idQueryName',
+		type: 'hidden',
+		default: 'productOrServices',
+		displayOptions: {
+			show: {
+				resource: [ 'productOrService' ],
+			},
+		},
+	},
+	{
+		displayName: 'uniqueName',
+		name: 'uniqueName',
+		type: 'hidden',
+		default: 'name',
+		displayOptions: {
+			show: {
+				resource: [ 'productOrService' ],
+			},
+		},
+	},
+	{
+		displayName: 'Product or Service Name or ID',
 		name: 'productOrServiceID',
-		type: 'string',
+		type: 'options',
 		default: '',
-		description: 'Product or service ID',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
 		required: true,
+		typeOptions: {
+			loadOptionsMethod: 'getIds',
+		},
 		displayOptions: {
 			show: {
 				resource: [ 'productOrService' ],
