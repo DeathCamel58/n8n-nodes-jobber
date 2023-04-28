@@ -4,6 +4,8 @@ import type {
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
+	ILoadOptionsFunctions,
+	INodePropertyOptions
 } from 'n8n-workflow';
 
 import { apiJobberApiRequest } from "./GenericFunctions";
@@ -14,7 +16,7 @@ import { AssessmentFields, AssessmentOperations, AssessmentGenerateGetQuery } fr
 import { CapitalLoanFields, CapitalLoanOperations, CapitalLoanGenerateListQuery } from './NodeDescriptions/CapitalLoan';
 import { ClientEmailFields, ClientEmailOperations, ClientEmailGenerateListQuery } from './NodeDescriptions/ClientEmail';
 import { ClientPhoneFields, ClientPhoneOperations, ClientPhoneGenerateGetQuery, ClientPhoneGenerateListQuery } from './NodeDescriptions/ClientPhone';
-import { ClientFields, ClientOperations, ClientGenerateGetQuery, ClientGenerateListQuery } from './NodeDescriptions/Client';
+import { ClientFields, ClientOperations, ClientGenerateGetQuery, ClientGenerateListQuery, ClientGenerateUpsert, ClientGenerateArchive } from './NodeDescriptions/Client';
 import { EventFields, EventOperations, EventGenerateGetQuery } from './NodeDescriptions/Event';
 import { ExpenseFields, ExpenseOperations, ExpenseGenerateGetQuery, ExpenseGenerateListQuery } from './NodeDescriptions/Expense';
 import { GraphQLFields, GraphQLOperations } from './NodeDescriptions/GraphQL';
@@ -25,9 +27,9 @@ import { PayoutRecordFields, PayoutRecordOperations, PayoutRecordGenerateGetQuer
 import { ProductOrServiceFields, ProductOrServiceOperations, ProductOrServiceGenerateGetQuery, ProductOrServiceGenerateListQuery } from './NodeDescriptions/ProductOrService';
 import { PropertyFields, PropertyOperations, PropertyGenerateGetQuery, PropertyGenerateListQuery } from './NodeDescriptions/Property';
 import { QuoteFields, QuoteOperations, QuoteGenerateGetQuery, QuoteGenerateListQuery } from './NodeDescriptions/Quote';
-import { RequestFields, RequestOperations, RequestGenerateGetQuery, RequestGenerateListQuery } from './NodeDescriptions/Request';
+import { RequestFields, RequestOperations, RequestGenerateGetQuery, RequestGenerateListQuery, RequestGenerateUpsert, RequestGenerateArchiveQuery, RequestGenerateUnarchiveQuery } from './NodeDescriptions/Request';
 import { TaskFields, TaskOperations, TaskGenerateGetQuery } from './NodeDescriptions/Task';
-import { TaxRateFields, TaxRateOperations, TaxRateGenerateListQuery } from './NodeDescriptions/TaxRate';
+import { TaxRateFields, TaxRateOperations, TaxRateGenerateListQuery, TaxRateGenerateCreate } from './NodeDescriptions/TaxRate';
 import { TimeSheetEntryFields, TimeSheetEntryOperations, TimeSheetEntryGenerateGetQuery, TimeSheetEntryGenerateListQuery } from './NodeDescriptions/TimeSheetEntry';
 import { UserFields, UserOperations, UserGenerateGetQuery, UserGenerateListQuery } from './NodeDescriptions/User';
 import { VisitFields, VisitOperations, VisitGenerateGetQuery, VisitGenerateListQuery } from './NodeDescriptions/Visit';
@@ -310,6 +312,69 @@ export class Jobber implements INodeType {
 		],
 	};
 
+	methods = {
+		loadOptions: {
+			// Get all the labels to display them to user so that they can
+			// select them easily
+			async getIds(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+				const returnData: INodePropertyOptions[] = [];
+
+				// @ts-ignore
+				const queryName = this.getNode().parameters.idQueryName.toString();
+				// @ts-ignore
+				const uniqueName = this.getNode().parameters.uniqueName.toString();
+
+				// Get API version to use
+				const jobberGraphQLVersion = this.getNodeParameter('jobberGraphQLVersion', 0) as string;
+
+				// Get each page of results
+				let done = false;
+				let endCursor = '';
+				while (!done) {
+					// The query to use
+					const gqlQuery = `
+					query IdRequest {
+						${queryName}(first: 1000,after: "${endCursor}") {
+							nodes {
+								id
+								${uniqueName}
+							}
+							pageInfo {
+							  endCursor
+								hasNextPage
+								hasPreviousPage
+								startCursor
+							}
+							totalCount
+						}
+					}
+					`;
+
+					// Run the query!
+					const newIds = await apiJobberApiRequest.call(this, jobberGraphQLVersion, true, gqlQuery, {});
+
+					// Add new IDs into `ids`
+					for (const id of newIds.data[queryName].nodes) {
+						returnData.push({
+							name: id[uniqueName],
+							value: id.id
+						});
+					}
+
+					// Check if there is another page
+					if (newIds.data[queryName].pageInfo.hasNextPage) {
+						endCursor = newIds.data[queryName].pageInfo.endCursor;
+					} else {
+						// We've finished paginating the results
+						done = true;
+					}
+				}
+
+				return returnData;
+			},
+		},
+	};
+
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: IDataObject[] = [];
@@ -450,6 +515,51 @@ export class Jobber implements INodeType {
 						const filterArchived = this.getNodeParameter('clientFilterArchived', i, '') as boolean;
 
 						const gqlQuery = ClientGenerateListQuery(qty, search, minimal, filterCompanies, filterLeads, filterArchived);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} else if (operation === 'upsert') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('clientID', i, '') as string;
+						const firstName = this.getNodeParameter('clientFirstName', i, '') as string;
+						const lastName = this.getNodeParameter('clientLastName', i, '') as string;
+						const companyName = this.getNodeParameter('clientCompanyName', i, '') as string;
+						const phones = this.getNodeParameter('clientPhones', i, '') as any;
+						const emails = this.getNodeParameter('clientEmails', i, '') as any;
+						const billingAddress = this.getNodeParameter('clientBillingAddress', i, '') as any;
+						const properties = this.getNodeParameter('clientProperties', i, '') as any;
+						const minimal = this.getNodeParameter('clientMinimal', i, '') as boolean;
+
+						const gqlQuery = ClientGenerateUpsert(id, firstName, lastName, companyName, phones, emails, billingAddress, properties, minimal);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} else if (operation === 'archive') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('clientID', i, '') as string;
+						const minimal = this.getNodeParameter('clientMinimal', i, '') as boolean;
+
+						const gqlQuery = ClientGenerateArchive(id, minimal);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
@@ -919,6 +1029,72 @@ export class Jobber implements INodeType {
 						throw error;
 					}
 				}
+			} else if (operation === 'upsert') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('requestID', i, '') as string;
+						const contactName = this.getNodeParameter('requestContactName', i, '') as string;
+						const companyName = this.getNodeParameter('requestCompanyName', i, '') as string;
+						const title = this.getNodeParameter('requestTitle', i, '') as string;
+						const email = this.getNodeParameter('requestEmail', i, '') as string;
+						const clientId = this.getNodeParameter('requestClientId', i, '') as string;
+						const source = this.getNodeParameter('requestSource', i, '') as string;
+						const phone = this.getNodeParameter('requestPhone', i, '') as string;
+						const propertyId = this.getNodeParameter('requestPropertyId', i, '') as string;
+						const referringClient = this.getNodeParameter('requestReferringClient', i, '') as string;
+						const minimal = this.getNodeParameter('requestMinimal', i, '') as boolean;
+
+						const gqlQuery = RequestGenerateUpsert(id, contactName, companyName, title, email, clientId, source, phone, propertyId, referringClient, minimal);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} if (operation === 'archive') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('requestID', i, '') as string;
+						const minimal = this.getNodeParameter('requestMinimal', i, '') as boolean;
+
+						const gqlQuery = RequestGenerateArchiveQuery(id, minimal);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} if (operation === 'unarchive') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const id = this.getNodeParameter('requestID', i, '') as string;
+						const minimal = this.getNodeParameter('requestMinimal', i, '') as boolean;
+
+						const gqlQuery = RequestGenerateUnarchiveQuery(id, minimal);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
 			}
 		} else if (resource === 'task') {
 			if (operation === 'get') {
@@ -948,6 +1124,26 @@ export class Jobber implements INodeType {
 						const search = this.getNodeParameter('taxRateSearch', i, '') as string;
 
 						const gqlQuery = TaxRateGenerateListQuery(qty, search);
+
+						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
+
+						returnData.push(responseData as IDataObject);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({json: {error: error.message}});
+							continue;
+						}
+						throw error;
+					}
+				}
+			} else if (operation === 'create') {
+				for (let i = 0; i < length; i++) {
+					try {
+						const name = this.getNodeParameter('taxRateName', i, '') as string;
+						const rate = this.getNodeParameter('taxRateRate', i, '') as string;
+						const internalDescription = this.getNodeParameter('taxRateInternalDescription', i, '') as string;
+
+						const gqlQuery = TaxRateGenerateCreate(name, rate, internalDescription);
 
 						responseData = await apiJobberApiRequest.call(this, jobberGraphQLVersion, hideAPIExtensions, gqlQuery, {});
 
