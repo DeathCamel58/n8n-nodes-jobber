@@ -32,12 +32,39 @@ export const PropertyOperations: INodeProperties[] = [
 
 export const PropertyFields: INodeProperties[] = [
 	{
-		displayName: 'ID',
+		displayName: 'idQueryName',
+		name: 'idQueryName',
+		type: 'hidden',
+		default: 'properties',
+		displayOptions: {
+			show: {
+				resource: [ 'property' ],
+			},
+		},
+	},
+	{
+		displayName: 'uniqueName',
+		name: 'uniqueName',
+		type: 'hidden',
+		// TODO: Figure out what to set this to
+		// The address is in `address { street }`, but we currently can't get this in the list
+		default: 'id',
+		displayOptions: {
+			show: {
+				resource: [ 'property' ],
+			},
+		},
+	},
+	{
+		displayName: 'Property Name or ID',
 		name: 'propertyID',
-		type: 'string',
+		type: 'options',
 		default: '',
-		description: 'Property ID',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
 		required: true,
+		typeOptions: {
+			loadOptionsMethod: 'getIds',
+		},
 		displayOptions: {
 			show: {
 				resource: [ 'property' ],

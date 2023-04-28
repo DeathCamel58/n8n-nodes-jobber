@@ -4,6 +4,8 @@ import type {
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
+	ILoadOptionsFunctions,
+	INodePropertyOptions
 } from 'n8n-workflow';
 
 import { apiJobberApiRequest } from "./GenericFunctions";
@@ -308,6 +310,69 @@ export class Jobber implements INodeType {
 					'version, and some additional things that we probably don\'t need as an output from this node.',
 			},
 		],
+	};
+
+	methods = {
+		loadOptions: {
+			// Get all the labels to display them to user so that they can
+			// select them easily
+			async getIds(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+				const returnData: INodePropertyOptions[] = [];
+
+				// @ts-ignore
+				const queryName = this.getNode().parameters.idQueryName.toString();
+				// @ts-ignore
+				const uniqueName = this.getNode().parameters.uniqueName.toString();
+
+				// Get API version to use
+				const jobberGraphQLVersion = this.getNodeParameter('jobberGraphQLVersion', 0) as string;
+
+				// Get each page of results
+				let done = false;
+				let endCursor = '';
+				while (!done) {
+					// The query to use
+					const gqlQuery = `
+					query IdRequest {
+						${queryName}(first: 1000,after: "${endCursor}") {
+							nodes {
+								id
+								${uniqueName}
+							}
+							pageInfo {
+							  endCursor
+								hasNextPage
+								hasPreviousPage
+								startCursor
+							}
+							totalCount
+						}
+					}
+					`;
+
+					// Run the query!
+					const newIds = await apiJobberApiRequest.call(this, jobberGraphQLVersion, true, gqlQuery, {});
+
+					// Add new IDs into `ids`
+					for (const id of newIds.data[queryName].nodes) {
+						returnData.push({
+							name: id[uniqueName],
+							value: id.id
+						});
+					}
+
+					// Check if there is another page
+					if (newIds.data[queryName].pageInfo.hasNextPage) {
+						endCursor = newIds.data[queryName].pageInfo.endCursor;
+					} else {
+						// We've finished paginating the results
+						done = true;
+					}
+				}
+
+				return returnData;
+			},
+		},
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {

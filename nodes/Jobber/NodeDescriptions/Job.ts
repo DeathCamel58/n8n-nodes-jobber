@@ -32,12 +32,37 @@ export const JobOperations: INodeProperties[] = [
 
 export const JobFields: INodeProperties[] = [
 	{
-		displayName: 'ID',
+		displayName: 'idQueryName',
+		name: 'idQueryName',
+		type: 'hidden',
+		default: 'jobs',
+		displayOptions: {
+			show: {
+				resource: [ 'job' ],
+			},
+		},
+	},
+	{
+		displayName: 'uniqueName',
+		name: 'uniqueName',
+		type: 'hidden',
+		default: 'jobNumber',
+		displayOptions: {
+			show: {
+				resource: [ 'job' ],
+			},
+		},
+	},
+	{
+		displayName: 'Job Name or ID',
 		name: 'jobID',
-		type: 'string',
+		type: 'options',
 		default: '',
-		description: 'Job ID',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
 		required: true,
+		typeOptions: {
+			loadOptionsMethod: 'getIds',
+		},
 		displayOptions: {
 			show: {
 				resource: [ 'job' ],

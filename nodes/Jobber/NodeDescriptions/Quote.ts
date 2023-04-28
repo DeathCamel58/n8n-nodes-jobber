@@ -32,12 +32,37 @@ export const QuoteOperations: INodeProperties[] = [
 
 export const QuoteFields: INodeProperties[] = [
 	{
-		displayName: 'ID',
+		displayName: 'idQueryName',
+		name: 'idQueryName',
+		type: 'hidden',
+		default: 'quotes',
+		displayOptions: {
+			show: {
+				resource: [ 'quote' ],
+			},
+		},
+	},
+	{
+		displayName: 'uniqueName',
+		name: 'uniqueName',
+		type: 'hidden',
+		default: 'quoteNumber',
+		displayOptions: {
+			show: {
+				resource: [ 'quote' ],
+			},
+		},
+	},
+	{
+		displayName: 'Quote Name or ID',
 		name: 'quoteID',
-		type: 'string',
+		type: 'options',
 		default: '',
-		description: 'Quote ID',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
 		required: true,
+		typeOptions: {
+			loadOptionsMethod: 'getIds',
+		},
 		displayOptions: {
 			show: {
 				resource: [ 'quote' ],

@@ -32,12 +32,37 @@ export const PayoutRecordOperations: INodeProperties[] = [
 
 export const PayoutRecordFields: INodeProperties[] = [
 	{
-		displayName: 'ID',
+		displayName: 'idQueryName',
+		name: 'idQueryName',
+		type: 'hidden',
+		default: 'payoutRecords',
+		displayOptions: {
+			show: {
+				resource: [ 'payoutRecord' ],
+			},
+		},
+	},
+	{
+		displayName: 'uniqueName',
+		name: 'uniqueName',
+		type: 'hidden',
+		default: 'id',
+		displayOptions: {
+			show: {
+				resource: [ 'payoutRecord' ],
+			},
+		},
+	},
+	{
+		displayName: 'Payout Record Name or ID',
 		name: 'payoutRecordID',
-		type: 'string',
+		type: 'options',
 		default: '',
-		description: 'Payout record ID',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
 		required: true,
+		typeOptions: {
+			loadOptionsMethod: 'getIds',
+		},
 		displayOptions: {
 			show: {
 				resource: [ 'payoutRecord' ],

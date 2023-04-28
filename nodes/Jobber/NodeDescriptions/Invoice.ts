@@ -32,12 +32,37 @@ export const InvoiceOperations: INodeProperties[] = [
 
 export const InvoiceFields: INodeProperties[] = [
 	{
-		displayName: 'ID',
+		displayName: 'idQueryName',
+		name: 'idQueryName',
+		type: 'hidden',
+		default: 'invoices',
+		displayOptions: {
+			show: {
+				resource: [ 'invoice' ],
+			},
+		},
+	},
+	{
+		displayName: 'uniqueName',
+		name: 'uniqueName',
+		type: 'hidden',
+		default: 'invoiceNumber',
+		displayOptions: {
+			show: {
+				resource: [ 'invoice' ],
+			},
+		},
+	},
+	{
+		displayName: 'Invoice Name or ID',
 		name: 'invoiceID',
-		type: 'string',
+		type: 'options',
 		default: '',
-		description: 'Invoice ID',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
 		required: true,
+		typeOptions: {
+			loadOptionsMethod: 'getIds',
+		},
 		displayOptions: {
 			show: {
 				resource: [ 'invoice' ],
